@@ -1,7 +1,7 @@
 <template>
   <q-page class="flex flex-center">
-    <!-- <div class="text-h2 text-grey-5" style="padding-right:10px">Search Books</div> -->
-    <q-input
+      <!-- <div class="text-h2 text-grey-5">Search Books</div> -->
+      <q-input
         autofocus
           dark
           rounded
@@ -14,13 +14,14 @@
           <q-btn round dense flat icon="search" @click = "searchBooks"/>
         </template>
 
-      </q-input>
+        </q-input>
+
   </q-page>
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
-  name: 'PageIndex',
   data () {
     return {
       search: '',
@@ -32,18 +33,21 @@ export default {
     searchBooks () {
       this.showLoading()
     },
+    getDrinks () {
+      return this.$axios.get('https://www.thecocktaildb.com/api/json/v1/1/search.php?s=margarita')
+        .then(response => response.data)
+    },
+    ...mapActions('booksStore', ['saveDrinks']),
     showLoading () {
-      if (this.search !== '') {
-        this.$q.loading.show({
-          message: 'Searching books'
-        })
-
-        this.timer = setTimeout(() => {
+      this.$q.loading.show({
+        message: 'Searching books'
+      })
+      this.getDrinks()
+        .then(response => {
+          this.saveDrinks(response, response)
           this.$q.loading.hide()
-          this.timer = undefined
           this.$router.push('results')
-        }, 3000)
-      }
+        })
     }
   }
 }
