@@ -21,7 +21,7 @@
 export default {
   computed: {
     wishlist () {
-      return this.$store.getters['booksStore/getWishlistDrinks']
+      return this.$store.getters['booksStore/getWishlistBooks']
     }
   }
 }

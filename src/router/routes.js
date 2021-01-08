@@ -19,7 +19,7 @@ const routes = [
   },
   {
     path: '/books',
-    component: () => import('layouts/ResultsLayout.vue'),
+    component: () => import('layouts/BasicLayout.vue'),
     children: [
       { path: ':id', component: () => import('pages/IndividualBook.vue') }
     ]

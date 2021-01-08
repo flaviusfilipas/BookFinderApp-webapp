@@ -1,6 +1,6 @@
 const state = {
   drinks: [],
-  wishlistDrinks: [],
+  wishlistBooks: [],
   books: [
     {
       id: 1,
@@ -74,6 +74,44 @@ const state = {
       label: 'Gotham.ink',
       value: 'Gotham'
     }
+  ],
+  offers: [
+    {
+      id: 1,
+      storeName: 'Carturesti',
+      hasStock: true,
+      price: 60,
+      transportaionPrice: 16,
+      bookUrl: 'https://carturesti.ro/carte/sapiens-scurta-istorie-a-omenirii-1983201?p=1'
+    }, {
+      id: 2,
+      storeName: 'Elefant',
+      hasStock: false,
+      price: 55,
+      transportaionPrice: 20,
+      bookUrl: 'https://www.elefant.ro/sapiens-scurta-istorie-a-omenirii_801a0f96-0d46-41b8-83cd-3487a8f6e379?tracking=searchterm:sapiens'
+    }, {
+      id: 3,
+      storeName: 'Libris',
+      hasStock: true,
+      price: 50,
+      transportaionPrice: 15,
+      bookUrl: 'https://www.libris.ro/sapiens-scurta-istorie-a-omenirii-yuval-noah-POL978-973-46-4888-7--p1166978.html'
+    }, {
+      id: 4,
+      storeName: 'Librarie.net',
+      hasStock: false,
+      price: 65,
+      transportaionPrice: 16,
+      bookUrl: 'https://www.librarie.net/p/298142/sapiens-scurta-istorie-a-omenirii'
+    }, {
+      id: 5,
+      storeName: 'Emag',
+      hasStock: true,
+      price: 63.27,
+      transportaionPrice: 10,
+      bookUrl: 'https://www.emag.ro/sapiens-scurta-istorie-a-omenirii-yuval-noah-harari-9789734648887/pd/D67WBNBBM/?X-Search-Id=60bccc323beb6c1b71f6&X-Product-Id=41691636&X-Search-Page=1&X-Search-Position=0&X-Section=search&X-MB=0&X-Search-Action=view'
+    }
   ]
 }
 
@@ -82,6 +120,7 @@ const actions = {
     commit('saveDrinks', payload)
   },
   addToWishlist ({ commit }, payload) {
+    console.log(state.wishlistBooks)
     commit('addToWishlist', payload)
   }
 }
@@ -91,7 +130,7 @@ const mutations = {
     Object.assign(state.drinks, payload.drinks)
   },
   addToWishlist (state, payload) {
-    state.wishlistDrinks.push(payload)
+    state.wishlistBooks.push(payload)
   }
 }
 
@@ -99,8 +138,8 @@ const getters = {
   getDrinks: (state) => {
     return state.drinks
   },
-  getWishlistDrinks: (state) => {
-    return state.wishlistDrinks
+  getWishlistBooks: (state) => {
+    return state.wishlistBooks
   },
   getBooks: (state) => {
     return state.books
@@ -110,6 +149,9 @@ const getters = {
   },
   getPublishers: (state) => {
     return state.publishers
+  },
+  getOffers: (state) => {
+    return state.offers
   }
 }
 

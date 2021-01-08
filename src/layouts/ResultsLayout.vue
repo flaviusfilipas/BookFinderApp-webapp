@@ -35,7 +35,7 @@
     </q-header>
     <q-drawer bordered show-if-above v-model="left" side="left" behavior="desktop">
         <q-list padding>
-          <q-item-label class="q-mb-sm text-h6">
+          <q-item-label class="q-ml-sm q-mb-sm text-h6">
             Autors
           </q-item-label>
           <q-option-group
@@ -44,7 +44,7 @@
             v-model="optAuthors"
              color="blue"
             type="checkbox"/>
-          <q-item-label class="q-mb-sm text-h6">
+          <q-item-label class="q-ml-sm q-mb-sm text-h6">
             Publishers
           </q-item-label>
           <q-option-group

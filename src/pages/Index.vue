@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+// import { mapActions } from 'vuex'
 export default {
   data () {
     return {
@@ -32,21 +32,26 @@ export default {
     searchBooks () {
       this.showLoading()
     },
-    getDrinks () {
-      return this.$axios.get('https://www.thecocktaildb.com/api/json/v1/1/search.php?s=margarita')
-        .then(response => response.data)
-    },
-    ...mapActions('booksStore', ['saveDrinks']),
+    // getDrinks () {
+    //   return this.$axios.get('https://www.thecocktaildb.com/api/json/v1/1/search.php?s=margarita')
+    //     .then(response => response.data)
+    // },
+    // ...mapActions('booksStore', ['saveDrinks']),
     showLoading () {
       this.$q.loading.show({
         message: 'Searching books'
       })
-      this.getDrinks()
-        .then(response => {
-          this.saveDrinks(response, response)
-          this.$q.loading.hide()
-          this.$router.push('results')
-        })
+      setTimeout(() => {
+        this.$q.loading.hide()
+        this.$router.push('results')
+      }, 3000)
+
+      // this.getDrinks()
+      //   .then(response => {
+      //     this.saveDrinks(response, response)
+      //     this.$q.loading.hide()
+      //     this.$router.push('results')
+      //   })
     }
   }
 }

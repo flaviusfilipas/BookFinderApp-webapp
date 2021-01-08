@@ -1,7 +1,7 @@
 <template>
         <q-page class ="flex">
              <q-list class="fit" separator>
-               <q-item clickable v-for="book in booksResults" :key="book.id" :to="'/books/' + book.id">
+               <q-item clickable v-for="book in booksResults" :key="book.id" @click= "goToBook(book.id)">
                   <!-- <q-item-section>
                     <q-item-label>Stuff</q-item-label>
                      <img :src="drink.strDrinkThumb">
@@ -48,8 +48,16 @@ export default {
     ...mapActions('booksStore', ['addToWishlist']),
     addToWishlists (item) {
       this.addToWishlist(item, item)
+    },
+    goToBook (bookId) {
+      this.$q.loading.show({
+        message: 'Finding best offers'
+      })
+      setTimeout(() => {
+        this.$q.loading.hide()
+        this.$router.push(`/books/${bookId}`)
+      }, 2500)
     }
-
   }
 }
 
