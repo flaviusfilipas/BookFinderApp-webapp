@@ -24,8 +24,24 @@ const routes = [
       { path: ':id', component: () => import('pages/IndividualBook.vue') }
     ]
   },
-  { path: '/login', component: () => import('pages/Login.vue') },
-  { path: '/wishlist', component: () => import('pages/Wishlist.vue') },
+  {
+    path: '/login',
+    component: () => import('layouts/BasicLayout.vue'),
+    children: [
+      {
+        path: '', component: () => import('pages/Login.vue')
+      }
+    ]
+  },
+  {
+    path: '/wishlist',
+    component: () => import('layouts/BasicLayout.vue'),
+    children: [
+      {
+        path: '', component: () => import('pages/Wishlist.vue')
+      }
+    ]
+  },
   { path: '/help', component: () => import('pages/Help.vue') },
 
   // Always leave this as last one,

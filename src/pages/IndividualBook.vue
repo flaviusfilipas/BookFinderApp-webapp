@@ -63,7 +63,7 @@
               <q-btn color="primary" icon="shopping_cart" label="Go to store" @click="redirectToProvider(offer.bookUrl)" />
           </td>
           <td>
-              <q-btn flat round icon="favorite_border" @click="addToWishlists(offer)" />
+              <q-btn flat round icon="favorite_border"/>
                 <q-tooltip>
                   Add to wishlist
                 </q-tooltip>
