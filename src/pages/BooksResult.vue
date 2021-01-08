@@ -1,36 +1,58 @@
 <template>
-  <q-layout view="hHh lpR fFf">
-    <q-page-container>
-        <q-page class="flex flex-center">
-             <q-list bordered padding>
-               <q-item v-for="drink in booksResults" :key="drink.id">
-                  <q-item-section top thumbnail class="q-ml-none">
-                  <img :src="drink.strDrinkThumb">
+        <q-page class ="flex">
+             <q-list class="fit" separator>
+               <q-item clickable v-for="book in booksResults" :key="book.id" :to="'/books/' + book.id">
+                  <!-- <q-item-section>
+                    <q-item-label>Stuff</q-item-label>
+                     <img :src="drink.strDrinkThumb">
+                     </q-item-section> -->
+                  <q-item-section avatar>
+                      <q-avatar style="height:1.5em" square size="5em">
+                        <img
+                          :src="book.imgSource"
+                          />
+                      </q-avatar>
                   </q-item-section>
-                  <q-item-section>
-                    <q-item-label v-text="drink.strDrink"></q-item-label>
-                    <q-item-label v-text="drink.strInstructions" caption></q-item-label>
+                  <q-item-section top>
+                    <q-item-label class="text-h5" v-text="book.title"></q-item-label>
+                    <q-item-label class= "text-subtitle2" v-text="book.author"></q-item-label>
+                    <q-item-label class = "text-caption text-italic" v-text="book.isbn"></q-item-label>
+
                   </q-item-section>
+
+                  <!-- <q-item-section>
+                    <q-item>
+                      <q-btn round color="secondary" icon="add" @click="addToWishlists(drink)"/>
+                    </q-item>
+                  </q-item-section> -->
                </q-item>
              </q-list>
         </q-page>
-    </q-page-container>
-  </q-layout>
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
   data () {
-    return { name: 'Books Result' }
+    return {
+      name: 'Books Result',
+      current: 1
+    }
   },
   computed: {
     booksResults () {
-      return this.$store.getters['booksStore/getDrinks']
+      return this.$store.getters['booksStore/getBooks']
     }
+  },
+  methods: {
+    ...mapActions('booksStore', ['addToWishlist']),
+    addToWishlists (item) {
+      this.addToWishlist(item, item)
+    }
+
   }
 }
 
 </script>
 <style scoped>
-
 </style>

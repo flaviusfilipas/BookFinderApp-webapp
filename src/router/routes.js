@@ -10,10 +10,23 @@ const routes = [
       { path: '', component: () => import('pages/Index.vue') }
     ]
   },
+  {
+    path: '/results',
+    component: () => import('layouts/ResultsLayout.vue'),
+    children: [
+      { path: '', component: () => import('pages/BooksResult.vue') }
+    ]
+  },
+  {
+    path: '/books',
+    component: () => import('layouts/ResultsLayout.vue'),
+    children: [
+      { path: ':id', component: () => import('pages/IndividualBook.vue') }
+    ]
+  },
   { path: '/login', component: () => import('pages/Login.vue') },
   { path: '/wishlist', component: () => import('pages/Wishlist.vue') },
   { path: '/help', component: () => import('pages/Help.vue') },
-  { path: '/results', component: () => import('pages/BooksResult.vue') },
 
   // Always leave this as last one,
   // but you can also remove it
