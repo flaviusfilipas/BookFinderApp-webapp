@@ -29,7 +29,7 @@ const routes = [
     component: () => import('layouts/BasicLayout.vue'),
     children: [
       {
-        path: '', component: () => import('pages/Login.vue')
+        path: '', component: () => import('pages/Auth.vue')
       }
     ]
   },
@@ -42,8 +42,6 @@ const routes = [
       }
     ]
   },
-  { path: '/help', component: () => import('pages/Help.vue') },
-
   // Always leave this as last one,
   // but you can also remove it
   {

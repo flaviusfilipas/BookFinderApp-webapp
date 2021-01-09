@@ -26,10 +26,6 @@
             to="/wishlist"
             icon= "favorite_border"
             label= "Wishlist"/>
-           <q-route-tab
-            to="/help"
-            icon="help_outline"
-            label="Help"/>
         </q-tabs>
       </q-toolbar>
     </q-header>

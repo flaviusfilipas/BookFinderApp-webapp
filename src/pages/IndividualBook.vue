@@ -63,7 +63,7 @@
               <q-btn color="primary" icon="shopping_cart" label="Go to store" @click="redirectToProvider(offer.bookUrl)" />
           </td>
           <td>
-              <q-btn flat round icon="favorite_border"/>
+              <q-btn round flat icon="favorite_border" @click="addToWishlist"  />
                 <q-tooltip>
                   Add to wishlist
                 </q-tooltip>
@@ -80,8 +80,8 @@ import { mapActions } from 'vuex'
 export default {
   methods: {
     ...mapActions('booksStore', ['addToWishlist']),
-    addToWishlists (item) {
-      this.addToWishlist(item, item)
+    addToWishlist () {
+      // this.addToWishlist(item, item)
       this.$q.notify({
         type: 'positive',
         timeout: 100,
