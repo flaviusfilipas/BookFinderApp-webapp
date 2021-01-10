@@ -1,6 +1,7 @@
 <template>
   <q-page padding>
-      <q-card class="shadow-10">
+      <q-card style=" margin:0 auto;
+    width:35%" class="shadow-10">
           <q-tabs
             v-model="tab"
             dense
@@ -41,7 +42,7 @@
                   </q-input>
                 </div>
                 <div class="row">
-                  <q-btn color="primary" label="Login" @click="login"/>
+                  <q-btn style="margin:0 0 auto auto;" color="primary" label="Login" @click="login"/>
                 </div>
             </q-tab-panel>
             <q-tab-panel name="register">
@@ -97,10 +98,11 @@ export default {
 </script>
 
 <style>
-  .q-card{
-    margin:0 auto; width:35%
+  #auth-card{
+    margin:0 auto;
+    width:35%
   }
-  .q-btn{
+  #login-button{
     margin:0 0 auto auto;
   }
 </style>

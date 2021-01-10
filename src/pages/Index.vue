@@ -1,7 +1,17 @@
 <template>
-  <q-page class ="flex flex-center">
+  <q-page class="flex flex-center">
       <div class="column">
-        <h2 class="text-grey-5">Search Books</h2>
+          <div class="column items-center">
+            <div class="row justify-center">
+                <img class="logo-image" src="../assets/logo.png">
+                <div class="logo-text text-grey-5 text-h2 q-mt-lg">
+                  Bookify
+                </div>
+            </div>
+            <div class="row text-grey-5 text-h4 text-italic q-mb-xl">
+                 Compare book prices from major providers
+            </div>
+          </div>
         <q-input
           class="text-cyan-13"
           autofocus
@@ -9,11 +19,10 @@
           rounded
           outlined
           v-model="search"
-          placeholder="Search Books"
-          @keyup.enter="searchBooks"
-        >
-          <template v-slot:after>
-            <q-btn round dense flat icon="search" @click = "searchBooks"/>
+          placeholder="Search By Title, ISBN, Author or Keyword"
+          @keyup.enter="searchBooks">
+          <template v-slot:append>
+            <q-btn round flat icon="search" @click = "searchBooks"/>
           </template>
         </q-input>
       </div>
@@ -61,12 +70,19 @@ export default {
   .q-page {
     background: linear-gradient(to left, #000000, #434343);
   }
+  .logo-image{
+    height: 10em;
+  }
+  .logo-text{
+    align-self: center;
+  }
   @media(min-width: 757px){
-    h2{
-      margin-left: 135px;
-    }
     .q-input{
       width: 700px;
     }
+
+    /* .logo-image{
+      height: 10em;
+    } */
   }
 </style>

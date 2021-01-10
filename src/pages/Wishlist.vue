@@ -127,7 +127,7 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
   .list{
     width:50%;
   }

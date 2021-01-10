@@ -32,7 +32,7 @@
     <q-drawer bordered show-if-above v-model="left" side="left" behavior="desktop">
         <q-list padding>
           <q-item-label class="q-ml-sm q-mb-sm text-h6">
-            Autors
+            Authors
           </q-item-label>
           <q-option-group
             class="q-mb-sm"

@@ -101,7 +101,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
   .bookStyle{
     display: flex;
     justify-content: center;
