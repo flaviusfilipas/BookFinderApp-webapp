@@ -4,11 +4,11 @@
           <div class="column items-center">
             <div class="row justify-center">
                 <img class="logo-image" src="../assets/logo.png">
-                <div class="logo-text text-grey-5 text-h2 q-mt-lg">
+                <div class="logo-text text-h2 q-mt-lg">
                   Bookify
                 </div>
             </div>
-            <div class="row text-grey-5 text-h4 text-italic q-mb-xl">
+            <div class="logo-text row text-h4 text-italic q-mb-xl">
                  Compare book prices from major providers
             </div>
           </div>
@@ -68,13 +68,15 @@ export default {
 </script>
 <style scoped>
   .q-page {
-    background: linear-gradient(to left, #000000, #434343);
+    /* background: linear-gradient(to left, #000000, #434343); */
+    background: linear-gradient(145deg,#1976d2 11%,#0f477e 75%)
   }
   .logo-image{
     height: 10em;
   }
   .logo-text{
     align-self: center;
+    color:white;
   }
   @media(min-width: 757px){
     .q-input{

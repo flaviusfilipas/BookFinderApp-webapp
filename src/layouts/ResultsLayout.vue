@@ -12,7 +12,7 @@
         <q-space/>
 
         <q-tabs >
-        <q-input class="strect" dark dense standout v-model="text" input-class="text-right">
+        <q-input class="strect" dark dense standout v-model="text">
           <template v-slot:append>
             <q-icon v-if="text === ''" name="search" />
             <q-icon v-else name="clear" class="cursor-pointer" @click="text = ''" />
