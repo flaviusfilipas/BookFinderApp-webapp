@@ -13,7 +13,7 @@
             </div>
           </div>
         <q-input
-          class="text-cyan-13"
+          class="text-white"
           autofocus
           dark
           rounded
