@@ -23,9 +23,9 @@
             icon="account_circle"
             label="Login"/>
            <q-route-tab
-            to="/wishlist"
-            icon= "favorite_border"
-            label= "Wishlist"/>
+            to="/watchlist"
+            icon= "visibility"
+            label= "Watchlist"/>
         </q-tabs>
       </q-toolbar>
     </q-header>

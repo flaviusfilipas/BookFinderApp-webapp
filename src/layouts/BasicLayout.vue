@@ -23,8 +23,8 @@
             icon="account_circle"
             label="Login"/>
            <q-route-tab
-            to="/wishlist"
-            icon= "favorite_border"
+            to="/watchlist"
+            icon= "visibility"
             label= "Wishlist"/>
         </q-tabs>
       </q-toolbar>
@@ -51,5 +51,7 @@ export default {
 </script>
 
 <style>
-
+   .icon{
+    cursor: pointer;
+  }
 </style>

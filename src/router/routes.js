@@ -34,11 +34,11 @@ const routes = [
     ]
   },
   {
-    path: '/wishlist',
+    path: '/watchlist',
     component: () => import('layouts/BasicLayout.vue'),
     children: [
       {
-        path: '', component: () => import('pages/Wishlist.vue')
+        path: '', component: () => import('pages/Watchlist.vue')
       }
     ]
   },

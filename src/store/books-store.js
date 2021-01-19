@@ -7,21 +7,30 @@ const state = {
       author: 'Yuval Noah Harrari',
       isbn: '978-1-79921-863-0',
       editura: 'Harper Perennial',
-      imgSource: 'https://cdn.dc5.ro/img-prod/1983201-0-240.jpeg'
+      imgSource: 'https://cdn.dc5.ro/img-prod/1983201-0-240.jpeg',
+      type: 'Hardcover',
+      pages: 450,
+      publisher: 'Litera'
     }, {
       id: 2,
       title: 'Sapiens',
       author: 'Yuval Noah Harrari',
       editura: 'Harper Perennial',
       isbn: '978-1-79921-863-0',
-      imgSource: 'https://cdn.dc5.ro/img-prod/1983201-0-240.jpeg'
+      imgSource: 'https://cdn.dc5.ro/img-prod/1983201-0-240.jpeg',
+      type: 'Hardcover',
+      pages: 450,
+      publisher: 'Litera'
     }, {
       id: 3,
       title: 'Sapiens',
       author: 'Yuval Noah Harrari',
       isbn: '978-1-79921-863-0',
       editura: 'Harper Perennial',
-      imgSource: 'https://cdn.dc5.ro/img-prod/1983201-0-240.jpeg'
+      imgSource: 'https://cdn.dc5.ro/img-prod/1983201-0-240.jpeg',
+      type: 'Hardcover',
+      pages: 450,
+      publisher: 'Litera'
     }
   ],
   books: [

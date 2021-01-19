@@ -32,15 +32,79 @@
             </div>
           </q-img>
           <q-card-section>
-            <div class="text-overline">ISBN: {{book.isbn}}</div>
+            <div class="text-caption text-bold">ISBN: {{book.isbn}}</div>
             <div class="text-caption text-italic">{{book.type}}, {{book.pages}} pages, publisher {{book.publisher}}</div>
           </q-card-section>
           <q-card-actions class="relative-position">
-            <q-btn flat>Offers</q-btn>
+            <q-btn flat @click="offersModal = true"> Offers</q-btn>
           </q-card-actions>
         </q-card>
       </q-list>
     </div>
+    <q-dialog v-model="offersModal" full-width>
+    <q-card>
+     <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6">Offers</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+
+      <q-card-section class="q-pt-none">
+        <q-markup-table class="q-ma-sm" flat bordered>
+          <thead class="bg-another">
+            <tr>
+              <th class="text-left">Provider</th>
+              <th class="text-right">Stock</th>
+              <th class="text-right">Cost</th>
+              <th class="text-center">
+                <div>
+                  Transportation
+                </div>
+                <div>
+                  cost
+                </div>
+              </th>
+              <th class="text-right">Total</th>
+              <th class="text-right"></th>
+              <th class="text-right"></th>
+            </tr>
+          </thead>
+          <tbody class="bg-grey-3">
+            <tr v-for="offer in offers" :key="offer.id">
+              <td class="text-left">{{offer.storeName}}</td>
+              <td class="text-right" style="font-size:1.5em">
+                <div v-if="offer.hasStock" >
+                  <q-icon class="text-positive" name="check"/>
+                    <q-tooltip>Item is is stock</q-tooltip>
+                </div>
+                <div v-else>
+                  <q-icon class="text-negative" name="close" />
+                    <q-tooltip>Item is not in stock</q-tooltip>
+                </div>
+              </td>
+              <td class="text-right">{{offer.price.toFixed(2)}}</td>
+              <td class="text-center">{{offer.transportaionPrice.toFixed(2)}}</td>
+              <td class="text-right">{{(offer.price + offer.transportaionPrice).toFixed(2)}}</td>
+              <td class="text-center">
+                  <q-btn round flat icon="shopping_cart" @click="redirectToProvider(offer.bookUrl)" >
+                    <q-tooltip>
+                        Go to provider's page
+                    </q-tooltip>
+                  </q-btn>
+              </td>
+              <td>
+                  <q-btn round flat icon="visibility" @click="addToWatchlist">
+                    <q-tooltip>
+                      Add to watchlist
+                    </q-tooltip>
+                  </q-btn>
+              </td>
+            </tr>
+          </tbody>
+        </q-markup-table>
+      </q-card-section>
+    </q-card>
+  </q-dialog>
   </q-page>
 </template>
 
@@ -51,7 +115,8 @@ export default {
     return {
       current: 1,
       optAuthors: ['yuval'],
-      optPublishers: ['Gotham']
+      optPublishers: ['Gotham'],
+      offersModal: false
     }
   },
   computed: {
@@ -63,21 +128,23 @@ export default {
     },
     publishers () {
       return this.$store.getters['booksStore/getPublishers']
+    },
+    offers () {
+      return this.$store.getters['booksStore/getOffers']
     }
   },
   methods: {
     ...mapActions('booksStore', ['addToWishlist']),
-    addToWishlists (item) {
-      this.addToWishlist(item, item)
-    },
-    goToBook (bookId) {
-      this.$q.loading.show({
-        message: 'Finding best offers'
+    addToWatchlist () {
+      this.$q.notify({
+        type: 'positive',
+        timeout: 100,
+        message: 'Book added to watchlist'
       })
-      setTimeout(() => {
-        this.$q.loading.hide()
-        this.$router.push(`/books/${bookId}`)
-      }, 2500)
+    },
+
+    redirectToProvider (providerUrl) {
+      window.open(providerUrl, '_blank')
     }
   }
 }
@@ -92,5 +159,6 @@ export default {
     background-color: #f8f1f1;
     border-radius: 25px;
     position: sticky;
+    top:0;
   }
 </style>
