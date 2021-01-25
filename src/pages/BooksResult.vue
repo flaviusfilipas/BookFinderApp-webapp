@@ -1,6 +1,6 @@
 <template>
-  <q-page class="row">
-    <div class="col-2 q-ma-sm">
+  <q-page class="row results-page">
+    <div class="web-filter-div col-2 q-ma-sm">
       <q-list class="filters" padding>
         <q-item-label class="q-ml-sm q-mb-sm text-h6">
           Authors
@@ -9,7 +9,7 @@
           class="q-mb-sm"
           :options="authors"
           v-model="optAuthors"
-            color="blue"
+          color="blue"
           type="checkbox"/>
         <q-item-label class="q-ml-sm q-mb-sm text-h6">
           Publishers
@@ -22,7 +22,7 @@
         />
       </q-list>
     </div>
-    <div class="col-9">
+    <div class="col-sm-9 col-xs-12">
       <q-list class="row">
           <q-card class="my-card q-pa-sm q-ma-sm" v-for="book in booksResults" :key="book.id">
           <q-img :src="book.imgSource">
@@ -105,6 +105,61 @@
       </q-card-section>
     </q-card>
   </q-dialog>
+  <q-drawer
+  side="right"
+  behavior="mobile"
+  v-model="filterModal"
+  overlay
+  bordered
+  content-style="background-color:#f8f1f1"
+  >
+    <q-card>
+      <q-card-section>
+        <div class="text-h6">Choose filters</div>
+      </q-card-section>
+
+      <q-card-section>
+        <q-item-label class="text-h6">Authors</q-item-label>
+          <q-select
+          v-model="optAuthors"
+          multiple
+          :options="authors"
+          use-chips
+          stack-label
+          label="Select authors/s"
+        />
+        <q-item-label class="text-h6">Publishers</q-item-label>
+          <q-select
+          v-model="optPublishers"
+          multiple
+          :options="publishers"
+          use-chips
+          stack-label
+          label="Select publisher/s"
+        />
+      </q-card-section>
+
+      <q-card-actions align="right" class="text-primary">
+        <q-btn flat label="Cancel" v-close-popup />
+        <q-btn flat label="Confirm" v-close-popup />
+      </q-card-actions>
+      </q-card>
+  </q-drawer>
+  <q-page-sticky expand class="bg-primary" position="top" >
+      <div class="q-ml-xs flex col-11">
+        <div class="col">
+          <q-input class="mobile-input text-white q-pa-xs" bg-color="white" dark dense standout v-model="text">
+            <template v-slot:append>
+              <q-icon class="text-grey-9" v-if="text === ''" name="search" />
+              <q-icon v-else name="clear" class="text-dark cursor-pointer" @click="text = ''" />
+            </template>
+          </q-input>
+        </div>
+        <div class="filter-div q-ma-xs">
+          <q-btn flat round icon="filter_list" @click="filterModal = true"/>
+        </div>
+      </div>
+    </q-page-sticky>
   </q-page>
 </template>
 
@@ -113,10 +168,12 @@ import { mapActions } from 'vuex'
 export default {
   data () {
     return {
+      text: '',
       current: 1,
-      optAuthors: ['yuval'],
-      optPublishers: ['Gotham'],
-      offersModal: false
+      optAuthors: [],
+      optPublishers: [],
+      offersModal: false,
+      filterModal: false
     }
   },
   computed: {
@@ -150,7 +207,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
   .my-card{
   width: 100%;
   max-width: 200px;
@@ -161,4 +218,39 @@ export default {
     position: sticky;
     top:0;
   }
+  .q-chip{
+    background-color: #f8f1f1;
+  }
+   @media(min-width: 695px) {
+    .q-page-sticky{
+      display: none;
+    }
+  }
+  @media(max-width: 695px){
+    .web-filter-div{
+      display: none;
+    }
+    .my-card{
+    width: 100%;
+    max-width: 150px;
+    }
+    .filters{
+      display: none;
+    }
+    .filter-div{
+      background-color:#f8f1f1;
+      height:2.8em;
+      border-radius:3px;
+    }
+    .q-page-sticky{
+      justify-content: flex-start;
+    }
+    .header-input{
+      display: none;
+    }
+    .results-page{
+      margin-top: 48px;
+    }
+  };
+
 </style>

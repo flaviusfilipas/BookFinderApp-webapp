@@ -1,13 +1,13 @@
 <template>
-    <q-page class="row">
+    <q-page class="watchlist-page row">
       <div class="col-2 q-ma-sm">
-       <div class="column filters">
+       <div class="column watchlist-filters">
          <div class="col-1 text-center text-h4">
             Watchlist
          </div>
          <hr>
           <div>
-            <q-list class="filters" padding>
+            <q-list class="watchlist-filters" padding>
               <q-item-label class="q-ml-sm q-mb-sm text-h5">
                 Filters
               </q-item-label>
@@ -25,17 +25,17 @@
         </div>
        </div>
     </div>
-    <div class="col-9">
+    <div class="col-md-9 col-xs-12">
       <q-list class="row">
           <q-card class="my-card q-pa-sm q-ma-sm" v-for="book in wishlist" :key="book.id">
           <q-card-section horizontal>
           <q-img :src="book.imgSource">
-            <div style="height:45%" class="absolute-bottom">
+            <div style="height:45%" class="image-book-info absolute-bottom">
               <div class="text-subtitle2" v-text="book.title"></div>
               <div class="text-caption">By: {{book.author}}</div>
             </div>
           </q-img>
-          <q-card-actions vertical style="background-color:#f8f1f1;border-radius:10px">
+          <q-card-actions class="q-ml-xs" vertical style="background-color:#f8f1f1;border-radius:10px;padding:0px">
             <q-btn :class="[isHidden ? 'hidden' : '']"  flat round color="yellow" icon="star" />
             <q-btn flat round color="warning" icon="add_alert" @click="alertModal =true" >
               <q-tooltip>
@@ -59,7 +59,11 @@
               </q-btn-dropdown>
           </q-card-actions>
           </q-card-section>
-          <q-card-section>
+          <q-card-section class="book-info-section">
+            <div class="q-mt-xs q-mb-xs text-center book-info-section-title">
+              <div class="text-subtitle1 text-white">{{book.title}}</div>
+              <div class="text-subtitle2 text-white">By: {{book.author}}</div>
+            </div>
             <div class="text-caption text-bold">ISBN: {{book.isbn}}</div>
             <div class="text-caption text-italic">{{book.type}}, {{book.pages}} pages, publisher {{book.publisher}}</div>
             <div class="text-caption text-italic text-positive">In stock</div>
@@ -88,6 +92,25 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+
+    <q-page-sticky expand class="q-mb-xl sticky-pg bg-primary" position="top" >
+      <div class="q-ml-xs flex col-11">
+        <div class="col">
+          <q-input class="text-white q-pa-xs" bg-color="white" dark dense standout v-model="text">
+            <template v-slot:append>
+              <q-icon class="text-grey-9" v-if="text === ''" name="search" />
+              <q-icon v-else name="clear" class="text-dark cursor-pointer" @click="text = ''" />
+            </template>
+          </q-input>
+        </div>
+        <div class="sort-div q-ma-xs">
+           <q-btn flat round icon="filter_list"/>
+        </div>
+        <div class="sort-div q-ma-xs">
+          <q-btn flat round icon="assistant"/>
+        </div>
+      </div>
+    </q-page-sticky>
     </q-page>
 </template>
 
@@ -96,6 +119,7 @@ import vue from 'vue'
 export default {
   data () {
     return {
+      text: '',
       alertModal: false,
       isHidden: true,
       filter: [],
@@ -187,15 +211,56 @@ export default {
 }
 </script>
 
-<style>
-   .my-card{
+<style scoped>
+  .my-card{
   width: 100%;
   max-width: 200px;
   }
-  .filters{
+  .watchlist-filters{
     background-color: #f8f1f1;
     border-radius: 25px;
     position: sticky;
     top:0;
   }
+
+  @media(min-width: 897px) {
+    .sticky-pg{
+      display: none;
+    }
+    .book-info-section-title{
+      display: none;
+    }
+  }
+  @media(max-width: 897px){
+  .my-card{
+    width: 100%;
+    max-width: 150px;
+    }
+     .watchlist-filters{
+      display: none;
+    }
+    .sort-div{
+      background-color:#f8f1f1;
+      height:2.8em;
+      border-radius:3px;
+    }
+    .sticky-pg{
+      justify-content: flex-start;
+    }
+    .header-searchbar{
+      display: none;
+    }
+    .watchlist-page{
+      margin-top: 48px;
+    }
+    .book-info-section{
+      padding: 0px;
+    }
+    .image-book-info{
+      display: none
+    }
+    .book-info-section-title{
+      background: rgba(0, 0, 0, 0.47);
+    }
+  };
 </style>

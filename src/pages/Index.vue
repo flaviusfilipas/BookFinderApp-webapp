@@ -8,12 +8,12 @@
                   Bookify
                 </div>
             </div>
-            <div class="logo-text row text-h4 text-italic q-mb-xl">
+            <div class="logo-text text-center row text-h4 text-italic q-mb-xl q-mb-xs-sm">
                  Compare book prices from major providers
             </div>
           </div>
         <q-input
-          class="text-white"
+          class="text-white q-ma-xs-sm"
           autofocus
           dark
           rounded
@@ -66,7 +66,7 @@ export default {
 }
 
 </script>
-<style scoped>
+<style scoped lang="scss">
   .q-page {
     /* background: linear-gradient(to left, #000000, #434343); */
     background: linear-gradient(145deg,#1976d2 11%,#0f477e 75%)
@@ -83,8 +83,15 @@ export default {
       width: 700px;
     }
 
-    /* .logo-image{
-      height: 10em;
-    } */
+  @media(max-width: 599px){
+    .logo-text{
+      color:white;
+      font-size: small;
+    }
+    .logo-image{
+      height: 6.8em;
+    }
+  }
+
   }
 </style>
