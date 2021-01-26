@@ -106,20 +106,15 @@
     </q-card>
   </q-dialog>
   <q-drawer
-  side="right"
-  behavior="mobile"
-  v-model="filterModal"
-  overlay
-  bordered
-  content-style="background-color:#f8f1f1"
-  >
-    <q-card>
-      <q-card-section>
-        <div class="text-h6">Choose filters</div>
-      </q-card-section>
-
-      <q-card-section>
-        <q-item-label class="text-h6">Authors</q-item-label>
+    side="right"
+    behavior="mobile"
+    v-model="filterModal"
+    overlay
+    bordered
+    content-style="background-color:#e0e0e0">
+      <div class="q-ma-xs q-pa-xs text-h5 text-center" style="background-color:#f8f1f1;border-radius:3px">Choose filters</div>
+      <div class="q-ma-xs">
+        <div class="text-h6 q-mb-xs">Authors</div>
           <q-select
           v-model="optAuthors"
           multiple
@@ -128,7 +123,9 @@
           stack-label
           label="Select authors/s"
         />
-        <q-item-label class="text-h6">Publishers</q-item-label>
+      </div>
+      <div class="q-ma-xs">
+        <div class="text-h6">Publishers</div>
           <q-select
           v-model="optPublishers"
           multiple
@@ -137,13 +134,11 @@
           stack-label
           label="Select publisher/s"
         />
-      </q-card-section>
-
-      <q-card-actions align="right" class="text-primary">
-        <q-btn flat label="Cancel" v-close-popup />
-        <q-btn flat label="Confirm" v-close-popup />
-      </q-card-actions>
-      </q-card>
+      </div>
+      <div class="row absolute-bottom justify-center">
+        <q-btn class="bg-secondary q-mr-xs text-negative" label="Clear filters"/>
+        <q-btn class="bg-secondary" label="Apply filters"/>
+      </div>
   </q-drawer>
   <q-page-sticky expand class="bg-primary" position="top" >
       <div class="q-ml-xs flex col-11">

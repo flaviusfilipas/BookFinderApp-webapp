@@ -25,7 +25,7 @@
         </div>
        </div>
     </div>
-    <div class="col-md-9 col-xs-12">
+    <div class="col-sm-9 col-xs-12">
       <q-list class="row">
           <q-card class="my-card q-pa-sm q-ma-sm" v-for="book in wishlist" :key="book.id">
           <q-card-section horizontal>
@@ -92,6 +92,25 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <q-dialog v-model="filterModal">
+      <q-card>
+        <q-card-section>
+          <div class="text-h6">Choose filter</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+              <q-option-group
+                :options="filters"
+                type="checkbox"
+                v-model="filter"/>
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Cancel" v-close-popup />
+          <q-btn flat label="Confirm" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
 
     <q-page-sticky expand class="q-mb-xl sticky-pg bg-primary" position="top" >
       <div class="q-ml-xs flex col-11">
@@ -104,10 +123,14 @@
           </q-input>
         </div>
         <div class="sort-div q-ma-xs">
-           <q-btn flat round icon="filter_list"/>
+           <q-btn flat round icon="filter_list" @click="filterModal = true">
+              <q-tooltip>Filter results</q-tooltip>
+           </q-btn>
         </div>
         <div class="sort-div q-ma-xs">
-          <q-btn flat round icon="assistant"/>
+          <q-btn flat round icon="assistant">
+            <q-tooltip>Get suggestions</q-tooltip>
+          </q-btn>
         </div>
       </div>
     </q-page-sticky>
@@ -119,6 +142,7 @@ import vue from 'vue'
 export default {
   data () {
     return {
+      filterModal: false,
       text: '',
       alertModal: false,
       isHidden: true,
