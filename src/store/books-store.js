@@ -3,105 +3,131 @@ const state = {
   wishlistBooks: [
     {
       id: 1,
-      title: 'Sapiens',
+      title: 'Sapiens. Scurta istorie a omenirii',
       author: 'Yuval Noah Harrari',
       isbn: '978-1-79921-863-0',
-      editura: 'Harper Perennial',
       imgSource: 'https://cdn.dc5.ro/img-prod/1983201-0-240.jpeg',
       type: 'Hardcover',
-      pages: 450,
-      publisher: 'Litera'
+      pages: 384,
+      publisher: 'Polirom'
     }, {
       id: 2,
-      title: 'Sapiens',
+      title: 'Sapiens. A Brief History of Humankind',
       author: 'Yuval Noah Harrari',
-      editura: 'Harper Perennial',
-      isbn: '978-1-79921-863-0',
-      imgSource: 'https://cdn.dc5.ro/img-prod/1983201-0-240.jpeg',
+      isbn: '9780099590088',
+      imgSource: 'http://mcdn.elefant.ro/mnresize/350/350/is/product-images/cartero/801a0f96/0d46/41b8/83cd/3487a8f6e379/801a0f96-0d46-41b8-83cd-3487a8f6e379_1.jpg',
       type: 'Hardcover',
-      pages: 450,
-      publisher: 'Litera'
+      pages: 512,
+      publisher: 'Vintage'
     }, {
       id: 3,
-      title: 'Sapiens',
-      author: 'Yuval Noah Harrari',
-      isbn: '978-1-79921-863-0',
-      editura: 'Harper Perennial',
-      imgSource: 'https://cdn.dc5.ro/img-prod/1983201-0-240.jpeg',
+      title: 'Cosmosapiens- Evolutia omului de la originile universului',
+      author: 'John Hands',
+      isbn: '978-973-50-6584-3',
+      imgSource: 'http://mcdn.elefant.ro/mnresize/350/350/is/product-images/cartero/434fb1c2/ebf9/4caf/8f10/a6427e460a9d/434fb1c2-ebf9-4caf-8f10-a6427e460a9d_1.PNG',
       type: 'Hardcover',
-      pages: 450,
-      publisher: 'Litera'
+      pages: 756,
+      publisher: 'Humanitas'
     }
   ],
   books: [
     {
       id: 1,
-      title: 'Sapiens',
-      author: 'Yuval Noah Harrari',
-      isbn: '978-1-79921-863-0',
-      editura: 'Harper Perennial',
-      imgSource: 'https://cdn.dc5.ro/img-prod/1983201-0-240.jpeg',
+      title: 'Sapiens-Cele mai recente descoperiri',
+      author: 'Francois Savaier, Silvana Condemi',
+      isbn: '978-973-50-6868-4',
+      imgSource: 'http://mcdn.elefant.ro/mnresize/350/350/is/product-images/cartero/e13ea723/c3a7/407a/a60f/4c056d485f50/e13ea723-c3a7-407a-a60f-4c056d485f50_1.jpg',
       type: 'Paperback',
-      pages: 450,
-      publisher: 'Litera'
+      pages: 140,
+      publisher: 'Humanitas'
     }, {
       id: 2,
       title: 'Sapiens',
       author: 'Yuval Noah Harrari',
-      editura: 'Harper Perennial',
       isbn: '978-1-79921-863-0',
       imgSource: 'https://cdn.dc5.ro/img-prod/1983201-0-240.jpeg',
       type: 'Hardcover',
-      pages: 395,
-      publisher: 'Humanitas'
-    }, {
-      id: 3,
-      title: 'Sapiens',
-      author: 'Yuval Noah Harrari',
-      isbn: '978-1-79921-863-0',
-      editura: 'Harper Perennial',
-      imgSource: 'https://cdn.dc5.ro/img-prod/1983201-0-240.jpeg',
-      type: 'E-book',
-      pages: 465,
+      pages: 384,
       publisher: 'Polirom'
     }, {
+      id: 3,
+      title: 'Cu drag, Simon. Simon si planul homo sapiens(editia de film)',
+      author: 'Becky Albertalli',
+      isbn: ' 978-606-8754-42-0',
+      imgSource: 'http://mcdn.elefant.ro/mnresize/350/350/images/46/1237646/cu-drag-simon-simon-si-planul-homo-sapiens-editia-de-film_1_fullsize.jpg',
+      type: 'Hardcover',
+      pages: 288,
+      publisher: 'Epica'
+    }, {
       id: 4,
-      title: 'Sapiens',
+      title: 'Sapiens. A Brief History of Humankind',
       author: 'Yuval Noah Harrari',
-      isbn: '978-1-79921-863-0',
-      editura: 'Harper Perennial',
-      imgSource: 'https://cdn.dc5.ro/img-prod/1983201-0-240.jpeg',
-      type: 'Paperback',
-      pages: 450,
-      publisher: 'Litera'
+      isbn: '9780099590088',
+      imgSource: 'http://mcdn.elefant.ro/mnresize/350/350/is/product-images/cartero/801a0f96/0d46/41b8/83cd/3487a8f6e379/801a0f96-0d46-41b8-83cd-3487a8f6e379_1.jpg',
+      type: 'Hardcover',
+      pages: 512,
+      publisher: 'Vintage'
     }, {
       id: 5,
-      title: 'Sapiens',
-      author: 'Yuval Noah Harrari',
-      isbn: '978-1-79921-863-0',
-      editura: 'Harper Perennial',
-      imgSource: 'https://cdn.dc5.ro/img-prod/1983201-0-240.jpeg',
+      title: 'Sapiens. O istorie grafica. Volumul I. Nasterea omenirii',
+      author: 'Yuval Noah Harari, David Vandermeulen, Daniel Casanave',
+      isbn: '9789734683093',
+      imgSource: 'https://cdn.dc5.ro/img-prod/915949772-0-240.jpeg',
       type: 'Hardcover',
-      pages: 450,
-      publisher: 'Litera'
+      pages: 248,
+      publisher: 'Polirom'
+    },
+    {
+      id: 6,
+      title: 'Cosmosapiens- Evolutia omului de la originile universului',
+      author: 'John Hands',
+      isbn: '978-973-50-6584-3',
+      imgSource: 'http://mcdn.elefant.ro/mnresize/350/350/is/product-images/cartero/434fb1c2/ebf9/4caf/8f10/a6427e460a9d/434fb1c2-ebf9-4caf-8f10-a6427e460a9d_1.PNG',
+      type: 'Hardcover',
+      pages: 756,
+      publisher: 'Humanitas'
+    }, {
+      id: 7,
+      title: 'Sapiens. A Brief History of Humankind: (Patterns of Life), Paperback',
+      author: 'Yuval Noah Harari',
+      isbn: '1784873640',
+      imgSource: 'http://mcdn.elefant.ro/mnresize/750/750/is/product-images/carte-straina/gardners/49bdc011/ba1a/403d/bf16/9991c1449201/49bdc011-ba1a-403d-bf16-9991c1449201_1.jpg',
+      type: 'Paperback',
+      pages: 544,
+      publisher: 'Vintage Publishing'
+    }, {
+      id: 8,
+      title: 'A Pocket History of Human Evolution: How We Became Sapiens, Paperback',
+      author: 'Silvana Condemi',
+      isbn: '1615196048',
+      imgSource: 'http://mcdn.elefant.ro/mnresize/750/750/is/product-images/carte-straina/ingram/20200404/0f16cb80/fe34/447d/bf0c/079ce84e08fb/0f16cb80-fe34-447d-bf0c-079ce84e08fb_1.jpg',
+      type: 'Paperback',
+      pages: 160,
+      publisher: 'Experiment'
     }
   ],
   authors: [
     {
       label: 'Yuval Noah Harrari',
-      value: 'yuval'
+      value: 'Yuval Noah Harrari'
     }, {
-      label: 'Mircea Eliade',
-      value: 'Mircea'
+      label: 'John Hands',
+      value: 'John Hands'
     }, {
-      label: 'Mihai Eminescu',
-      value: 'Mihai'
+      label: 'Becky Albertalli',
+      value: 'Becky Albertalli'
     }, {
-      label: 'Cristi Popesco',
-      value: 'Cristi'
+      label: 'Francois Savaier',
+      value: 'Francois Savaier'
     }, {
-      label: 'Batman',
-      value: 'Batman'
+      label: 'Silvana Condemi',
+      value: 'Silvana Condemi'
+    }, {
+      label: 'David Vandermeulen',
+      value: 'David Vandermeulen'
+    }, {
+      label: 'Daniel Casanave',
+      value: 'Daniel Casanave'
     }
   ],
   publishers: [
@@ -115,11 +141,17 @@ const state = {
       label: 'Polirom',
       value: 'Polirom'
     }, {
-      label: 'Doncafe',
-      value: 'Doncafe'
+      label: 'Experiment',
+      value: 'Experiment'
     }, {
-      label: 'Gotham.ink',
-      value: 'Gotham'
+      label: 'Vintage Publishing',
+      value: 'Vintage Publishing'
+    }, {
+      label: 'Vintage',
+      value: 'Vintage'
+    }, {
+      label: 'Epica',
+      value: 'Epica'
     }
   ],
   offers: [
