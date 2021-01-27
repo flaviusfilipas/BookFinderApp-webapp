@@ -23,30 +23,10 @@
       </q-list>
     </div>
     <div class="col-sm-9 col-xs-12">
-      <!-- <div class="row bg-red full-height">
-          <q-card class="my-card" v-for="book in booksResults" :key="book.id">
-            <div class="img-container" :style="{backgroundImage:`url(${book.imgSource})`}">
-                <div style="position:absolute;bottom:10px;background: rgba(0, 0, 0, 0.47); font-color:white">
-                  <div>{{book.title}}</div>
-                  <div>By: {{book.author}}</div>
-                </div>
-            </div>
-            <q-card-section style="height=25%">
-              <div>ISBN: {{book.isbn}}</div>
-              <div>{{book.type}}, {{book.pages}} pages, publisher {{book.publisher}}</div>
-            </q-card-section>
-            <q-card-actions style="height:25%;position:absolute;bottom:5%;">
-              <q-btn flat @click="offersModal = true"> Offers</q-btn>
-            </q-card-actions>
-          </q-card>
-      </div> -->
       <div class="flex">
           <div class="row">
             <q-card class="my-card q-ma-sm" v-for="book in booksResults" :key="book.id">
               <div class="book-image-container">
-                <!-- <q-img :src="book.imgSource">
-                    <q-tooltip>{{book.title}}, By {{book.author}}</q-tooltip>
-                </q-img> -->
                   <img class="book-image q-ma-md" :src="book.imgSource">
                </div>
               <q-card-section class="q-pa-xs" >
@@ -236,9 +216,8 @@ export default {
   }
   .book-image{
    display:block;
-  //  margin:0 auto;
-   max-width:100%
-   ;max-height:100%
+   max-width:100%;
+   max-height:100%
   }
   .book-info-area{
     height:44px;
