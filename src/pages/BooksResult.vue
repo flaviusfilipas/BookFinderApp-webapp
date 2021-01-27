@@ -23,23 +23,48 @@
       </q-list>
     </div>
     <div class="col-sm-9 col-xs-12">
-      <q-list class="row">
-          <q-card class="my-card q-pa-sm q-ma-sm" v-for="book in booksResults" :key="book.id">
-          <q-img :src="book.imgSource">
-            <div class="absolute-bottom">
-              <div class="text-h6" v-text="book.title"></div>
-              <div class="text-subtitle2">By: {{book.author}}</div>
+      <!-- <div class="row bg-red full-height">
+          <q-card class="my-card" v-for="book in booksResults" :key="book.id">
+            <div class="img-container" :style="{backgroundImage:`url(${book.imgSource})`}">
+                <div style="position:absolute;bottom:10px;background: rgba(0, 0, 0, 0.47); font-color:white">
+                  <div>{{book.title}}</div>
+                  <div>By: {{book.author}}</div>
+                </div>
             </div>
-          </q-img>
-          <q-card-section>
-            <div class="text-caption text-bold">ISBN: {{book.isbn}}</div>
-            <div class="text-caption text-italic">{{book.type}}, {{book.pages}} pages, publisher {{book.publisher}}</div>
-          </q-card-section>
-          <q-card-actions class="relative-position">
-            <q-btn flat @click="offersModal = true"> Offers</q-btn>
-          </q-card-actions>
-        </q-card>
-      </q-list>
+            <q-card-section style="height=25%">
+              <div>ISBN: {{book.isbn}}</div>
+              <div>{{book.type}}, {{book.pages}} pages, publisher {{book.publisher}}</div>
+            </q-card-section>
+            <q-card-actions style="height:25%;position:absolute;bottom:5%;">
+              <q-btn flat @click="offersModal = true"> Offers</q-btn>
+            </q-card-actions>
+          </q-card>
+      </div> -->
+      <div class="flex">
+          <div class="row">
+            <q-card class="my-card q-ma-sm" v-for="book in booksResults" :key="book.id">
+              <div class="book-image-container">
+                <!-- <q-img :src="book.imgSource">
+                    <q-tooltip>{{book.title}}, By {{book.author}}</q-tooltip>
+                </q-img> -->
+                  <img class="book-image q-ma-md" :src="book.imgSource">
+               </div>
+              <q-card-section class="q-pa-xs" >
+                  <div class="book-info-area text-subtitle2 text-center" v-text="book.title">
+                  </div>
+                      <q-tooltip>{{book.title}}</q-tooltip>
+                  <div class="book-info-area text-caption text-center" >By: {{book.author}}</div>
+              </q-card-section>
+              <q-card-section class="q-pa-xs"   >
+                <div class="book-info-area text-bold text-center">ISBN: {{book.isbn}}</div>
+                <div class="book-info-area text-italic text-center">{{book.type}}, {{book.pages}} pages, publisher {{book.publisher}}</div>
+              </q-card-section>
+              <q-card-actions class="q-pa-xs">
+                <q-btn flat @click="offersModal = true"> Offers</q-btn>
+              </q-card-actions>
+          </q-card>
+        </div>
+      </div>
     </div>
     <q-dialog v-model="offersModal" full-width>
     <q-card>
@@ -203,6 +228,23 @@ export default {
 </script>
 
 <style lang="scss">
+  .book-image-container{
+    height: 270px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .book-image{
+   display:block;
+  //  margin:0 auto;
+   max-width:100%
+   ;max-height:100%
+  }
+  .book-info-area{
+    height:44px;
+    text-overflow:ellipsis;
+    overflow:hidden;
+  }
   .my-card{
   width: 100%;
   max-width: 200px;
