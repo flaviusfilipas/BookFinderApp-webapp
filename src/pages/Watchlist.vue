@@ -30,10 +30,10 @@
           <q-card class="my-card q-pa-sm q-ma-sm" v-for="book in wishlist" :key="book.id">
           <q-card-section horizontal>
           <q-img :src="book.imgSource">
-            <div style="height:45%" class="image-book-info absolute-bottom">
+            <!-- <div style="max-height:45%" class="image-book-info absolute-bottom">
               <div class="text-subtitle2" v-text="book.title"></div>
               <div class="text-caption">By: {{book.author}}</div>
-            </div>
+            </div> -->
           </q-img>
           <q-card-actions class="q-ml-xs" vertical style="background-color:#f8f1f1;border-radius:10px;padding:0px">
             <q-btn :class="[isHidden ? 'hidden' : '']"  flat round color="yellow" icon="star" />
@@ -59,16 +59,14 @@
               </q-btn-dropdown>
           </q-card-actions>
           </q-card-section>
-          <q-card-section class="book-info-section">
-            <div class="q-mt-xs q-mb-xs text-center book-info-section-title">
-              <div class="text-subtitle1 text-white">{{book.title}}</div>
-              <div class="text-subtitle2 text-white">By: {{book.author}}</div>
-            </div>
-            <div class="text-caption text-bold">ISBN: {{book.isbn}}</div>
-            <div class="text-caption text-italic">{{book.type}}, {{book.pages}} pages, publisher {{book.publisher}}</div>
-            <div class="text-caption text-italic text-positive">In stock</div>
-            <div class="text-caption text-italic">Sold by <b>Carturesti</b></div>
-            <div class="text-subtitle1 text-bold">Price: 55 lei</div>
+          <q-card-section class="q-pa-xs book-info-section">
+            <div class="watch-book-info-area text-subtitle2">{{book.title}}</div>
+            <div class="watch-book-info-area text-caption">By: {{book.author}}</div>
+            <div class="watch-book-info-area text-caption text-bold">ISBN: {{book.isbn}}</div>
+            <div class="watch-book-info-area text-caption text-italic">{{book.type}}, {{book.pages}} pages, publisher {{book.publisher}}</div>
+            <div class="watch-book-info-area text-caption text-italic text-positive">In stock</div>
+            <div class="watch-book-info-area text-caption text-italic">Sold by <b>Carturesti</b></div>
+            <div class="watch-book-info-area text-subtitle1 text-bold">Price: 55 lei</div>
           </q-card-section>
         </q-card>
       </q-list>
@@ -99,10 +97,10 @@
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-              <q-option-group
-                :options="filters"
-                type="checkbox"
-                v-model="filter"/>
+            <q-option-group
+              :options="filters"
+              type="checkbox"
+              v-model="filter"/>
         </q-card-section>
 
         <q-card-actions align="right" class="text-primary">
@@ -236,6 +234,12 @@ export default {
 </script>
 
 <style scoped>
+  .watch-book-info-area{
+    height:40px;
+    text-overflow:ellipsis;
+    overflow:hidden;
+  }
+
   .my-card{
   width: 100%;
   max-width: 200px;
