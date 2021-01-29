@@ -21,7 +21,8 @@ module.exports = function (/* ctx */) {
     boot: [
       'firebase',
       'i18n',
-      'axios'
+      'axios',
+      'router-auth'
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
@@ -40,7 +41,8 @@ module.exports = function (/* ctx */) {
       // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
 
       'roboto-font', // optional, you are not bound to it
-      'material-icons' // optional, you are not bound to it
+      'material-icons',
+      'fontawesome-v5'
     ],
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
@@ -104,7 +106,9 @@ module.exports = function (/* ctx */) {
       plugins: [
         'Loading',
         'Notify',
-        'Dialog'
+        'Dialog',
+        'LocalStorage',
+        'SessionStorage'
       ]
     },
 
