@@ -4,7 +4,7 @@ export default ({ router }) => {
   router.beforeEach((to, from, next) => {
     const loggedIn = SessionStorage.getItem('loggedIn')
     if (!loggedIn && to.path === '/watchlist') {
-      next()
+      next('/login')
     } else {
       next()
     }
