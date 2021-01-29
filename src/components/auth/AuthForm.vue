@@ -1,5 +1,5 @@
 <template>
-  <q-card class="q-pa-sm" style="border-radius:10px; width:100%; max-width:350px">
+  <q-card class="auth-card rounded-borders full-width q-pa-sm">
     <div class="row">
       <div class="col q-ma-xl text-h4 text-center">{{authType | capitaliseFirstLetter }}</div>
     </div>
@@ -17,11 +17,11 @@
         </template>
       </q-input>
     </div>
-    <!-- <div class="row justify-end">
-      <span @click="forgotPassword" style="cursor: pointer;" class="justify-end">
-        {{authType === 'login' ? 'Forgot password' : ''}}
+    <div class="row justify-end">
+      <span @click="forgotPassword" style="cursor: pointer;" class="q-mb-lg justify-end">
+        {{authType === 'login' ? 'Forgot password?' : ''}}
       </span>
-    </div> -->
+    </div>
     <div class="row">
         <q-btn @click="authenticate" class= "bg-primary text-white col q-mb-md" outline rounded :label="authType" />
     </div>
@@ -87,6 +87,8 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+  .auth-card{
+    max-width:350px
+  }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <q-page class="bg-secondary flex flex-center">
+  <q-page class="q-pa-sm bg-secondary flex flex-center">
       <auth-form authType ='login'></auth-form>
    </q-page>
 </template>
