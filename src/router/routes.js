@@ -29,7 +29,15 @@ const routes = [
     component: () => import('layouts/BasicLayout.vue'),
     children: [
       {
-        path: '', component: () => import('pages/Auth.vue')
+        path: '', component: () => import('pages/Login.vue')
+      }
+    ]
+  }, {
+    path: '/register',
+    component: () => import('layouts/BasicLayout.vue'),
+    children: [
+      {
+        path: '', component: () => import('pages/Register.vue')
       }
     ]
   },
