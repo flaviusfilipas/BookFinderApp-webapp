@@ -170,8 +170,8 @@ export default {
     return {
       text: '',
       current: 1,
-      optAuthors: [],
-      optPublishers: [],
+      // optAuthors: [],
+      // optPublishers: [],
       offersModal: false,
       filterModal: false
     }
@@ -189,10 +189,29 @@ export default {
     offers () {
       return this.$store.getters['booksStore/getOffers']
     },
-    ...mapState('authStore', ['loggedIn'])
+    ...mapState('authStore', ['loggedIn']),
+    ...mapState('booksStore', ['filters']),
+    optAuthors: {
+      get () {
+        return this.filters.author
+      },
+      set (value) {
+        this.setAuthorsFilter(value)
+        console.log(value)
+      }
+    },
+    optPublishers: {
+      get () {
+        return this.filters.publisher
+      },
+      set (value) {
+        console.log(value)
+        this.setPublishersFilter(value)
+      }
+    }
   },
   methods: {
-    ...mapActions('booksStore', ['addToWishlist']),
+    ...mapActions('booksStore', ['addToWishlist', 'setAuthorsFilter', 'setPublishersFilter', 'filterBooks']),
     addToWatchlist () {
       if (this.loggedIn) {
         this.$q.notify({
@@ -209,6 +228,16 @@ export default {
       window.open(providerUrl, '_blank')
     }
   }
+  // },
+  // watch: {
+  //   optAuthors: (value) => {
+  //     console.log(value)
+  //     console.log(this)
+  //   },
+  //   optPublishers: () => {
+  //     this.filterBooks()
+  //   }
+  // }
 }
 </script>
 

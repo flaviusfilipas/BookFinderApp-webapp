@@ -4,7 +4,7 @@ const state = {
     {
       id: 1,
       title: 'Sapiens. Scurta istorie a omenirii',
-      author: 'Yuval Noah Harrari',
+      author: 'Yuval Noah Harari',
       isbn: '978-1-79921-863-0',
       imgSource: 'https://cdn.dc5.ro/img-prod/1983201-0-240.jpeg',
       type: 'Hardcover',
@@ -13,7 +13,7 @@ const state = {
     }, {
       id: 2,
       title: 'Sapiens. A Brief History of Humankind',
-      author: 'Yuval Noah Harrari',
+      author: 'Yuval Noah Harari',
       isbn: '9780099590088',
       imgSource: 'http://mcdn.elefant.ro/mnresize/350/350/is/product-images/cartero/801a0f96/0d46/41b8/83cd/3487a8f6e379/801a0f96-0d46-41b8-83cd-3487a8f6e379_1.jpg',
       type: 'Hardcover',
@@ -43,7 +43,7 @@ const state = {
     }, {
       id: 2,
       title: 'Sapiens',
-      author: 'Yuval Noah Harrari',
+      author: 'Yuval Noah Harari',
       isbn: '978-1-79921-863-0',
       imgSource: 'https://cdn.dc5.ro/img-prod/1983201-0-240.jpeg',
       type: 'Hardcover',
@@ -61,7 +61,7 @@ const state = {
     }, {
       id: 4,
       title: 'Sapiens. A Brief History of Humankind',
-      author: 'Yuval Noah Harrari',
+      author: 'Yuval Noah Harari',
       isbn: '9780099590088',
       imgSource: 'http://mcdn.elefant.ro/mnresize/350/350/is/product-images/cartero/801a0f96/0d46/41b8/83cd/3487a8f6e379/801a0f96-0d46-41b8-83cd-3487a8f6e379_1.jpg',
       type: 'Hardcover',
@@ -108,8 +108,8 @@ const state = {
   ],
   authors: [
     {
-      label: 'Yuval Noah Harrari',
-      value: 'Yuval Noah Harrari'
+      label: 'Yuval Noah Harari',
+      value: 'Yuval Noah Harari'
     }, {
       label: 'John Hands',
       value: 'John Hands'
@@ -191,7 +191,12 @@ const state = {
       transportaionPrice: 10,
       bookUrl: 'https://www.emag.ro/sapiens-scurta-istorie-a-omenirii-yuval-noah-harari-9789734648887/pd/D67WBNBBM/?X-Search-Id=60bccc323beb6c1b71f6&X-Product-Id=41691636&X-Search-Page=1&X-Search-Position=0&X-Section=search&X-MB=0&X-Search-Action=view'
     }
-  ]
+  ],
+  filters: {
+    author: [],
+    publisher: [],
+    type: []
+  }
 }
 
 const actions = {
@@ -201,6 +206,15 @@ const actions = {
   addToWishlist ({ commit }, payload) {
     console.log(state.wishlistBooks)
     commit('addToWishlist', payload)
+  },
+  setAuthorsFilter ({ commit }, value) {
+    commit('setAuthorsFilter', value)
+  },
+  setPublishersFilter ({ commit }, value) {
+    commit('setPublishersFilter', value)
+  },
+  filterBooks ({ commit }) {
+    commit('filterBooks')
   }
 }
 
@@ -210,6 +224,28 @@ const mutations = {
   },
   addToWishlist (state, payload) {
     state.wishlistBooks.push(payload)
+  },
+  setAuthorsFilter (state, value) {
+    const filters = []
+    for (let i = 0; i < value.length; i++) {
+      if (typeof (value[i]) === 'object') {
+        filters.push(value[i].label)
+      } else {
+        filters.push(value[i])
+      }
+    }
+    state.filters.author = filters
+  },
+  setPublishersFilter (state, value) {
+    const filters = []
+    for (let i = 0; i < value.length; i++) {
+      if (typeof (value[i]) === 'object') {
+        filters.push(value[i].label)
+      } else {
+        filters.push(value[i])
+      }
+    }
+    state.filters.publisher = filters
   }
 }
 
@@ -221,6 +257,17 @@ const getters = {
     return state.wishlistBooks
   },
   getBooks: (state) => {
+    const filterKeys = Object.keys(state.filters)
+    const getValue = value => (typeof value === 'string' ? value.toUpperCase() : value)
+    const filteredBooks = state.books.filter(item => {
+      return filterKeys.every(key => {
+        if (!state.filters[key].length) return true
+        return state.filters[key].find(filter => getValue(item[key]).includes(getValue(filter)))
+      })
+    })
+    if (state.filters) {
+      return filteredBooks
+    }
     return state.books
   },
   getAuthors: (state) => {
