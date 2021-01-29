@@ -16,16 +16,25 @@
             <q-icon v-else name="clear" class="cursor-pointer" @click="text = ''" />
           </template>
         </q-input>
-        <q-route-tab
-        exact
-            to="/login"
-            icon="account_circle"
-            label="Login"/>
            <q-route-tab
-           exact
+            v-if = 'loggedIn'
+            exact
             to="/watchlist"
             icon= "visibility"
             label= "Watchlist"/>
+        <q-route-tab
+            v-if = '!loggedIn'
+            exact
+            to="/login"
+            icon="account_circle"
+            label="Login"/>
+        <q-route-tab
+            v-if = 'loggedIn'
+            exact
+             to="/"
+            @click="logOut"
+            icon="account_circle"
+            label="Logout"/>
         </q-tabs>
       </q-toolbar>
     </q-header>
@@ -37,6 +46,8 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex'
+
 export default {
   data () {
     return {
@@ -44,9 +55,16 @@ export default {
     }
   },
   methods: {
+    ...mapActions('authStore', ['logoutUser']),
+    logOut () {
+      this.logoutUser()
+    },
     goToLandingPage () {
       this.$router.push({ path: '/search' })
     }
+  },
+  computed: {
+    ...mapState('authStore', ['loggedIn'])
   }
 }
 </script>
