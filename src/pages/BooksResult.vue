@@ -164,7 +164,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 export default {
   data () {
     return {
@@ -188,16 +188,21 @@ export default {
     },
     offers () {
       return this.$store.getters['booksStore/getOffers']
-    }
+    },
+    ...mapState('authStore', ['loggedIn'])
   },
   methods: {
     ...mapActions('booksStore', ['addToWishlist']),
     addToWatchlist () {
-      this.$q.notify({
-        type: 'positive',
-        timeout: 100,
-        message: 'Book added to watchlist'
-      })
+      if (this.loggedIn) {
+        this.$q.notify({
+          type: 'positive',
+          timeout: 100,
+          message: 'Book added to watchlist'
+        })
+      } else {
+        this.$router.push('/login')
+      }
     },
 
     redirectToProvider (providerUrl) {
