@@ -140,9 +140,8 @@
           label="Select publisher/s"
         />
       </div>
-      <div class="row absolute-bottom justify-center">
-        <q-btn class="bg-secondary q-mr-xs text-negative" label="Clear filters"/>
-        <q-btn class="bg-secondary" label="Apply filters"/>
+      <div class="row absolute-bottom justify-end">
+        <q-btn class="bg-secondary text-negative" label="Clear filters" @click="clearFilters"/>
       </div>
   </q-drawer>
   <q-page-sticky expand class="bg-primary" position="top" >
@@ -170,8 +169,6 @@ export default {
     return {
       text: '',
       current: 1,
-      // optAuthors: [],
-      // optPublishers: [],
       offersModal: false,
       filterModal: false
     }
@@ -211,7 +208,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('booksStore', ['addToWishlist', 'setAuthorsFilter', 'setPublishersFilter', 'filterBooks']),
+    ...mapActions('booksStore', ['addToWishlist', 'setAuthorsFilter', 'setPublishersFilter', 'filterBooks', 'clearFilters']),
     addToWatchlist () {
       if (this.loggedIn) {
         this.$q.notify({
@@ -226,18 +223,11 @@ export default {
 
     redirectToProvider (providerUrl) {
       window.open(providerUrl, '_blank')
+    },
+    clearAllFilters () {
+      this.clearFilters()
     }
   }
-  // },
-  // watch: {
-  //   optAuthors: (value) => {
-  //     console.log(value)
-  //     console.log(this)
-  //   },
-  //   optPublishers: () => {
-  //     this.filterBooks()
-  //   }
-  // }
 }
 </script>
 

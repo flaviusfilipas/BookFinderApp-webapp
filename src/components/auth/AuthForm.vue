@@ -66,7 +66,6 @@ export default {
       if (this.authType === 'login') {
         this.loginUser(this.user)
         window.history.length > 1 ? this.$router.go(-1) : this.$router.push('/search')
-        console.log(this.$router.go(-1))
       } else {
         this.registerUser(this.user)
         window.history.length > 1 ? this.$router.go(-1) : this.$router.push('/search')

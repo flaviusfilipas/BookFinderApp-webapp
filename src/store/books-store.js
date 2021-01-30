@@ -215,6 +215,9 @@ const actions = {
   },
   filterBooks ({ commit }) {
     commit('filterBooks')
+  },
+  clearFilters ({ commit }) {
+    commit('clearFilters')
   }
 }
 
@@ -246,6 +249,11 @@ const mutations = {
       }
     }
     state.filters.publisher = filters
+  },
+  clearFilters (state) {
+    state.filters.author = []
+    state.filters.publisher = []
+    state.filters.type = []
   }
 }
 
