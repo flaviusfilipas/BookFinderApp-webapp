@@ -1,6 +1,6 @@
 <template>
     <q-page class="watchlist-page row">
-      <div class="col-2 q-ma-sm">
+      <div class="watchlist-filters-container col-2 q-ma-sm ">
        <div class="column watchlist-filters">
          <div class="col-1 text-center text-h4">
             Watchlist
@@ -26,50 +26,55 @@
        </div>
     </div>
     <div class="col-sm-9 col-xs-12">
-      <q-list class="row">
-          <q-card class="my-card q-pa-sm q-ma-sm" v-for="book in wishlist" :key="book.id">
-          <q-card-section horizontal>
-          <q-img :src="book.imgSource">
-            <!-- <div style="max-height:45%" class="image-book-info absolute-bottom">
-              <div class="text-subtitle2" v-text="book.title"></div>
-              <div class="text-caption">By: {{book.author}}</div>
-            </div> -->
-          </q-img>
-          <q-card-actions class="q-ml-xs" vertical style="background-color:#f8f1f1;border-radius:10px;padding:0px">
-            <q-btn :class="[isHidden ? 'hidden' : '']"  flat round color="yellow" icon="star" />
-            <q-btn flat round color="warning" icon="add_alert" @click="alertModal =true" >
-              <q-tooltip>
-                 Add alert
-              </q-tooltip>
-            </q-btn>
-                <q-btn-dropdown rounded flat color="red" dropdown-icon="close">
-                  <q-list>
-                    <q-item clickable v-close-popup @click="deleteFromWatchlist(book.id)">
-                      <q-item-section>
-                        <q-item-label>Delete from watchlist</q-item-label>
-                      </q-item-section>
-                    </q-item>
+      <div class="flex">
+        <div class="row">
+            <q-card class="my-card q-pa-sm q-ma-sm" v-for="book in wishlist" :key="book.id">
+              <q-card-section horizontal>
+              <!-- <div class="book-image-container">
+                  <img class="book-image" :src="book.imgSource">
+              </div> -->
+              <q-img :src="book.imgSource" style="height:100%; max-height:190px" height="190px">
+            </q-img>
+              <q-card-actions class="q-ml-xs" vertical style="border-radius:10px;padding:0px;">
+                <q-btn :class="[isHidden ? 'hidden' : '']"  flat round color="yellow" icon="star" />
+                <q-btn flat round color="warning" icon="add_alert" @click="alertModal =true" >
+                  <q-tooltip>
+                    Add alert
+                  </q-tooltip>
+                </q-btn>
+                    <q-btn-dropdown rounded flat color="red" dropdown-icon="close">
+                      <q-list>
+                        <q-item clickable v-close-popup @click="deleteFromWatchlist(book.id)">
+                          <q-item-section>
+                            <q-item-label>Delete from watchlist</q-item-label>
+                          </q-item-section>
+                        </q-item>
 
-                    <q-item clickable v-close-popup @click="deleteAlerts(book.id)">
-                      <q-item-section>
-                        <q-item-label>Delete alerts</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                  </q-list>
-              </q-btn-dropdown>
-          </q-card-actions>
-          </q-card-section>
-          <q-card-section class="q-pa-xs book-info-section">
-            <div class="watch-book-info-area text-subtitle2">{{book.title}}</div>
-            <div class="watch-book-info-area text-caption">By: {{book.author}}</div>
-            <div class="watch-book-info-area text-caption text-bold">ISBN: {{book.isbn}}</div>
-            <div class="watch-book-info-area text-caption text-italic">{{book.type}}, {{book.pages}} pages, publisher {{book.publisher}}</div>
-            <div class="watch-book-info-area text-caption text-italic text-positive">In stock</div>
-            <div class="watch-book-info-area text-caption text-italic">Sold by <b>Carturesti</b></div>
-            <div class="watch-book-info-area text-subtitle1 text-bold">Price: 55 lei</div>
-          </q-card-section>
-        </q-card>
-      </q-list>
+                        <q-item clickable v-close-popup @click="deleteAlerts(book.id)">
+                          <q-item-section>
+                            <q-item-label>Delete alerts</q-item-label>
+                          </q-item-section>
+                        </q-item>
+                      </q-list>
+                  </q-btn-dropdown>
+              </q-card-actions>
+            </q-card-section>
+            <q-card-section class="q-pa-xs book-info-section">
+              <span class="watch-book-info-area">
+                <div class="watch-book-info-area text-subtitle2">{{book.title}}</div>
+                <q-tooltip>{{book.title}}</q-tooltip>
+              </span>
+              <div class="watch-book-info-area text-caption">By: {{book.author}}</div>
+              <div class="watch-book-info-area text-caption text-bold">ISBN: {{book.isbn}}</div>
+              <div class="watch-book-info-area text-caption text-italic">{{book.type}}, {{book.pages}} pages, publisher {{book.publisher}}</div>
+              <div v-if="book.hasStock" class="watch-book-info-area text-caption text-italic text-positive">In stock</div>
+              <div v-else class="watch-book-info-area text-caption text-italic text-negative">Not in stock</div>
+              <div class="watch-book-info-area text-caption text-italic">Sold by <b>{{book.provider}}</b></div>
+              <div class="watch-book-info-area text-subtitle1 text-bold">Price: {{book.price}} lei</div>
+            </q-card-section>
+          </q-card>
+        </div>
+      </div>
     </div>
      <q-dialog v-model="alertModal">
       <q-card>
@@ -137,14 +142,14 @@
 
 <script>
 import vue from 'vue'
+import { mapState, mapActions } from 'vuex'
 export default {
   data () {
     return {
       filterModal: false,
       text: '',
       alertModal: false,
-      isHidden: true,
-      filter: [],
+      isHidden: false,
       filters: [
         {
           label: 'Show price alerts',
@@ -168,6 +173,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions('booksStore', ['setWatchlistFilters']),
     deleteFromWatchlist (bookId) {
       this.$q.dialog({
         title: 'Confirm',
@@ -228,12 +234,33 @@ export default {
   computed: {
     wishlist () {
       return this.$store.getters['booksStore/getWishlistBooks']
+    },
+    ...mapState('booksStore', ['watchlistFilters']),
+    filter: {
+      get () {
+        return this.watchlistFilters
+      },
+      set (value) {
+        this.setWatchlistFilters(value)
+        console.log(value)
+      }
     }
   }
 }
 </script>
 
 <style scoped>
+  .book-image-container{
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+   .book-image{
+   display:block;
+   max-width:100%;
+   max-height:100%
+  }
   .watch-book-info-area{
     height:40px;
     text-overflow:ellipsis;
@@ -264,7 +291,7 @@ export default {
     width: 100%;
     max-width: 150px;
     }
-     .watchlist-filters{
+     .watchlist-filters-container{
       display: none;
     }
     .sort-div{

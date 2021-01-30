@@ -1,6 +1,6 @@
 const state = {
   drinks: [],
-  wishlistBooks: [
+  watchlistBooks: [
     {
       id: 1,
       title: 'Sapiens. Scurta istorie a omenirii',
@@ -9,7 +9,12 @@ const state = {
       imgSource: 'https://cdn.dc5.ro/img-prod/1983201-0-240.jpeg',
       type: 'Hardcover',
       pages: 384,
-      publisher: 'Polirom'
+      publisher: 'Polirom',
+      hasStock: true,
+      hasStockAlert: true,
+      hasPriceAlert: false,
+      provider: 'Carturesti',
+      price: 64
     }, {
       id: 2,
       title: 'Sapiens. A Brief History of Humankind',
@@ -18,7 +23,12 @@ const state = {
       imgSource: 'http://mcdn.elefant.ro/mnresize/350/350/is/product-images/cartero/801a0f96/0d46/41b8/83cd/3487a8f6e379/801a0f96-0d46-41b8-83cd-3487a8f6e379_1.jpg',
       type: 'Hardcover',
       pages: 512,
-      publisher: 'Vintage'
+      publisher: 'Vintage',
+      hasStock: true,
+      hasStockAlert: false,
+      hasPriceAlert: false,
+      provider: 'Carturesti',
+      price: 64
     }, {
       id: 3,
       title: 'Cosmosapiens- Evolutia omului de la originile universului',
@@ -27,7 +37,12 @@ const state = {
       imgSource: 'http://mcdn.elefant.ro/mnresize/350/350/is/product-images/cartero/434fb1c2/ebf9/4caf/8f10/a6427e460a9d/434fb1c2-ebf9-4caf-8f10-a6427e460a9d_1.PNG',
       type: 'Hardcover',
       pages: 756,
-      publisher: 'Humanitas'
+      publisher: 'Humanitas',
+      hasStock: false,
+      hasStockAlert: false,
+      hasPriceAlert: true,
+      provider: 'Elefant',
+      price: 64
     }
   ],
   books: [
@@ -196,7 +211,8 @@ const state = {
     author: [],
     publisher: [],
     type: []
-  }
+  },
+  watchlistFilters: []
 }
 
 const actions = {
@@ -204,7 +220,7 @@ const actions = {
     commit('saveDrinks', payload)
   },
   addToWishlist ({ commit }, payload) {
-    console.log(state.wishlistBooks)
+    console.log(state.watchlistBooks)
     commit('addToWishlist', payload)
   },
   setAuthorsFilter ({ commit }, value) {
@@ -212,6 +228,9 @@ const actions = {
   },
   setPublishersFilter ({ commit }, value) {
     commit('setPublishersFilter', value)
+  },
+  setWatchlistFilters ({ commit }, value) {
+    commit('setWatchlistFilters', value)
   },
   filterBooks ({ commit }) {
     commit('filterBooks')
@@ -226,7 +245,7 @@ const mutations = {
     Object.assign(state.drinks, payload.drinks)
   },
   addToWishlist (state, payload) {
-    state.wishlistBooks.push(payload)
+    state.watchlistBooks.push(payload)
   },
   setAuthorsFilter (state, value) {
     const filters = []
@@ -250,6 +269,13 @@ const mutations = {
     }
     state.filters.publisher = filters
   },
+  setWatchlistFilters (state, value) {
+    const filters = []
+    for (let i = 0; i < value.length; i++) {
+      filters.push(value[i])
+    }
+    state.watchlistFilters = filters
+  },
   clearFilters (state) {
     state.filters.author = []
     state.filters.publisher = []
@@ -262,7 +288,24 @@ const getters = {
     return state.drinks
   },
   getWishlistBooks: (state) => {
-    return state.wishlistBooks
+    if (state.watchlistFilters.length > 0) {
+      if (state.watchlistFilters.length > 1) {
+        return state.watchlistBooks.filter(item => {
+          return item.hasPriceAlert === true || item.hasStockAlert === true
+        })
+      } else {
+        if (state.watchlistFilters[0] === 'stock') {
+          return state.watchlistBooks.filter(item => {
+            return item.hasStockAlert === true
+          })
+        } else {
+          return state.watchlistBooks.filter(item => {
+            return item.hasPriceAlert === true
+          })
+        }
+      }
+    }
+    return state.watchlistBooks
   },
   getBooks: (state) => {
     const filterKeys = Object.keys(state.filters)
