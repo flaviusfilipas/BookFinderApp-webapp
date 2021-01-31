@@ -18,20 +18,15 @@
         to="/login"
         icon="account_circle"
         label="Login"/>
-    <q-route-tab
-        v-if = 'loggedIn'
-        exact
-          to="/"
-        @click="logOut"
-        icon="account_circle"
-        label="Logout"/>
+     <user-account-avatar v-if = 'loggedIn'/>
     </q-tabs>
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
-
+import UserAccountAvatar from './UserAccountAvatar.vue'
+import { mapState } from 'vuex'
 export default {
+  components: { UserAccountAvatar },
   props: {
     includeSearchbar: {
       type: Boolean,
@@ -41,12 +36,6 @@ export default {
   data () {
     return {
       text: ''
-    }
-  },
-  methods: {
-    ...mapActions('authStore', ['logoutUser']),
-    logOut () {
-      this.logoutUser()
     }
   },
   computed: {
