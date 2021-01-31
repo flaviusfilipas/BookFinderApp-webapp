@@ -176,35 +176,40 @@ const state = {
       hasStock: true,
       price: 60,
       transportaionPrice: 16,
-      bookUrl: 'https://carturesti.ro/carte/sapiens-scurta-istorie-a-omenirii-1983201?p=1'
+      bookUrl: 'https://carturesti.ro/carte/sapiens-scurta-istorie-a-omenirii-1983201?p=1',
+      isAddedToWatchlist: false
     }, {
       id: 2,
       storeName: 'Elefant',
       hasStock: false,
       price: 55,
       transportaionPrice: 20,
-      bookUrl: 'https://www.elefant.ro/sapiens-scurta-istorie-a-omenirii_801a0f96-0d46-41b8-83cd-3487a8f6e379?tracking=searchterm:sapiens'
+      bookUrl: 'https://www.elefant.ro/sapiens-scurta-istorie-a-omenirii_801a0f96-0d46-41b8-83cd-3487a8f6e379?tracking=searchterm:sapiens',
+      isAddedToWatchlist: false
     }, {
       id: 3,
       storeName: 'Libris',
       hasStock: true,
       price: 50,
       transportaionPrice: 15,
-      bookUrl: 'https://www.libris.ro/sapiens-scurta-istorie-a-omenirii-yuval-noah-POL978-973-46-4888-7--p1166978.html'
+      bookUrl: 'https://www.libris.ro/sapiens-scurta-istorie-a-omenirii-yuval-noah-POL978-973-46-4888-7--p1166978.html',
+      isAddedToWatchlist: false
     }, {
       id: 4,
       storeName: 'Librarie.net',
       hasStock: false,
       price: 65,
       transportaionPrice: 16,
-      bookUrl: 'https://www.librarie.net/p/298142/sapiens-scurta-istorie-a-omenirii'
+      bookUrl: 'https://www.librarie.net/p/298142/sapiens-scurta-istorie-a-omenirii',
+      isAddedToWatchlist: false
     }, {
       id: 5,
       storeName: 'Emag',
       hasStock: true,
       price: 63.27,
       transportaionPrice: 10,
-      bookUrl: 'https://www.emag.ro/sapiens-scurta-istorie-a-omenirii-yuval-noah-harari-9789734648887/pd/D67WBNBBM/?X-Search-Id=60bccc323beb6c1b71f6&X-Product-Id=41691636&X-Search-Page=1&X-Search-Position=0&X-Section=search&X-MB=0&X-Search-Action=view'
+      bookUrl: 'https://www.emag.ro/sapiens-scurta-istorie-a-omenirii-yuval-noah-harari-9789734648887/pd/D67WBNBBM/?X-Search-Id=60bccc323beb6c1b71f6&X-Product-Id=41691636&X-Search-Page=1&X-Search-Position=0&X-Section=search&X-MB=0&X-Search-Action=view',
+      isAddedToWatchlist: false
     }
   ],
   filters: {
@@ -220,7 +225,6 @@ const actions = {
     commit('saveDrinks', payload)
   },
   addToWishlist ({ commit }, payload) {
-    console.log(state.watchlistBooks)
     commit('addToWishlist', payload)
   },
   setAuthorsFilter ({ commit }, value) {
@@ -245,7 +249,11 @@ const mutations = {
     Object.assign(state.drinks, payload.drinks)
   },
   addToWishlist (state, payload) {
-    state.watchlistBooks.push(payload)
+    for (let i = 0; i < state.offers.length; i++) {
+      if (state.offers[i].id === payload.id) {
+        state.offers[i].isAddedToWatchlist = true
+      }
+    }
   },
   setAuthorsFilter (state, value) {
     const filters = []

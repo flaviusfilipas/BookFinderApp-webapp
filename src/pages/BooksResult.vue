@@ -98,7 +98,7 @@
                   </q-btn>
               </td>
               <td>
-                  <q-btn round flat icon="visibility" @click="addToWatchlist">
+                  <q-btn :class= "[offer.isAddedToWatchlist ? 'text-warning' : 'text-dark']" round flat icon="visibility" @click="addToWatchlist(offer)">
                     <q-tooltip>
                       Add to watchlist
                     </q-tooltip>
@@ -170,7 +170,8 @@ export default {
       text: '',
       current: 1,
       offersModal: false,
-      filterModal: false
+      filterModal: false,
+      isPressed: false
     }
   },
   computed: {
@@ -209,8 +210,10 @@ export default {
   },
   methods: {
     ...mapActions('booksStore', ['addToWishlist', 'setAuthorsFilter', 'setPublishersFilter', 'filterBooks', 'clearFilters']),
-    addToWatchlist () {
+    addToWatchlist (offer) {
+      this.addToWishlist(offer)
       if (this.loggedIn) {
+        this.isPressed = true
         this.$q.notify({
           type: 'positive',
           timeout: 100,
