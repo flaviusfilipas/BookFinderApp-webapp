@@ -35,11 +35,11 @@ const actions = {
       if (user) {
         commit('setLoggedIn', true)
         SessionStorage.set('loggedIn', true)
-        SessionStorage.set('usernName', user.email)
+        SessionStorage.set('userName', user.email)
       } else {
         commit('setLoggedIn', false)
         SessionStorage.set('loggedIn', false)
-        SessionStorage.clear('usernName', '')
+        SessionStorage.set('userName', '')
       }
     })
   },
