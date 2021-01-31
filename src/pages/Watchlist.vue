@@ -109,8 +109,7 @@
         </q-card-section>
 
         <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Cancel" v-close-popup />
-          <q-btn flat label="Confirm" v-close-popup />
+          <q-btn flat label="Clear filters" @click='clearAllFilters'/>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -173,7 +172,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('booksStore', ['setWatchlistFilters']),
+    ...mapActions('booksStore', ['setWatchlistFilters', 'clearFilters']),
     deleteFromWatchlist (bookId) {
       this.$q.dialog({
         title: 'Confirm',
@@ -229,6 +228,9 @@ export default {
         timeout: 500,
         message: 'You will be notified when book will be back in stock'
       })
+    },
+    clearAllFilters () {
+      this.clearFilters()
     }
   },
   computed: {

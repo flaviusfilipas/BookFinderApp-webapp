@@ -1,5 +1,4 @@
 const state = {
-  drinks: [],
   watchlistBooks: [
     {
       id: 1,
@@ -169,6 +168,15 @@ const state = {
       value: 'Epica'
     }
   ],
+  bookTypes: [
+    {
+      label: 'Hardcover',
+      value: 'Hardcover'
+    }, {
+      label: 'Paperback',
+      value: 'Paperback'
+    }
+  ],
   offers: [
     {
       id: 1,
@@ -221,9 +229,6 @@ const state = {
 }
 
 const actions = {
-  saveDrinks ({ commit }, payload) {
-    commit('saveDrinks', payload)
-  },
   addToWishlist ({ commit }, payload) {
     commit('addToWishlist', payload)
   },
@@ -241,13 +246,13 @@ const actions = {
   },
   clearFilters ({ commit }) {
     commit('clearFilters')
+  },
+  setBookTypesFilter ({ commit }, value) {
+    commit('setBookTypesFilter', value)
   }
 }
 
 const mutations = {
-  saveDrinks (state, payload) {
-    Object.assign(state.drinks, payload.drinks)
-  },
   addToWishlist (state, payload) {
     for (let i = 0; i < state.offers.length; i++) {
       if (state.offers[i].id === payload.id) {
@@ -277,6 +282,17 @@ const mutations = {
     }
     state.filters.publisher = filters
   },
+  setBookTypesFilter (state, value) {
+    const filters = []
+    for (let i = 0; i < value.length; i++) {
+      if (typeof (value[i]) === 'object') {
+        filters.push(value[i].label)
+      } else {
+        filters.push(value[i])
+      }
+    }
+    state.filters.type = filters
+  },
   setWatchlistFilters (state, value) {
     const filters = []
     for (let i = 0; i < value.length; i++) {
@@ -288,6 +304,7 @@ const mutations = {
     state.filters.author = []
     state.filters.publisher = []
     state.filters.type = []
+    state.watchlistFilters = []
   }
 }
 
@@ -334,6 +351,9 @@ const getters = {
   },
   getPublishers: (state) => {
     return state.publishers
+  },
+  getBookTypes: (state) => {
+    return state.bookTypes
   },
   getOffers: (state) => {
     return state.offers

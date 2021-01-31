@@ -3,7 +3,7 @@
     <div class="web-filter-div col-2 q-ma-sm">
       <q-list class="filters" padding>
         <q-item-label class="q-ml-sm q-mb-sm text-h6">
-          Authors
+          Author
         </q-item-label>
         <q-option-group
           class="q-mb-sm"
@@ -12,11 +12,20 @@
           color="blue"
           type="checkbox"/>
         <q-item-label class="q-ml-sm q-mb-sm text-h6">
-          Publishers
+          Publisher
         </q-item-label>
         <q-option-group
         :options="publishers"
         v-model="optPublishers"
+        color="blue"
+        type="checkbox"
+        />
+        <q-item-label class="q-ml-sm q-mb-sm text-h6">
+          Type
+        </q-item-label>
+        <q-option-group
+        :options="bookTypes"
+        v-model="optTypes"
         color="blue"
         type="checkbox"
         />
@@ -119,7 +128,7 @@
     content-style="background-color:#e0e0e0">
       <div class="q-ma-xs q-pa-xs text-h5 text-center" style="background-color:#f8f1f1;border-radius:3px">Choose filters</div>
       <div class="q-ma-xs">
-        <div class="text-h6 q-mb-xs">Authors</div>
+        <div class="text-h6 q-mb-xs">Author</div>
           <q-select
           v-model="optAuthors"
           multiple
@@ -130,7 +139,7 @@
         />
       </div>
       <div class="q-ma-xs">
-        <div class="text-h6">Publishers</div>
+        <div class="text-h6 q-mb-xs">Publisher</div>
           <q-select
           v-model="optPublishers"
           multiple
@@ -138,6 +147,17 @@
           use-chips
           stack-label
           label="Select publisher/s"
+        />
+      </div>
+      <div class="q-ma-xs">
+        <div class="text-h6">Type</div>
+          <q-select
+          v-model="optTypes"
+          multiple
+          :options="bookTypes"
+          use-chips
+          stack-label
+          label="Select book type/s"
         />
       </div>
       <div class="row absolute-bottom justify-end">
@@ -184,6 +204,9 @@ export default {
     publishers () {
       return this.$store.getters['booksStore/getPublishers']
     },
+    bookTypes () {
+      return this.$store.getters['booksStore/getBookTypes']
+    },
     offers () {
       return this.$store.getters['booksStore/getOffers']
     },
@@ -206,10 +229,19 @@ export default {
         console.log(value)
         this.setPublishersFilter(value)
       }
+    },
+    optTypes: {
+      get () {
+        return this.filters.type
+      },
+      set (value) {
+        console.log(value)
+        this.setBookTypesFilter(value)
+      }
     }
   },
   methods: {
-    ...mapActions('booksStore', ['addToWishlist', 'setAuthorsFilter', 'setPublishersFilter', 'filterBooks', 'clearFilters']),
+    ...mapActions('booksStore', ['addToWishlist', 'setAuthorsFilter', 'setPublishersFilter', 'filterBooks', 'clearFilters', 'setBookTypesFilter']),
     addToWatchlist (offer) {
       this.addToWishlist(offer)
       if (this.loggedIn) {
