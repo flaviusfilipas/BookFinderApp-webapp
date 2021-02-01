@@ -1,3 +1,4 @@
+import Vue from 'vue'
 const state = {
   watchlistBooks: [
     {
@@ -252,6 +253,9 @@ const actions = {
   },
   addAlert ({ commit }, payload) {
     commit('addAlert', payload)
+  },
+  deleteBookFromWatchlist ({ commit }, bookId) {
+    commit('deleteFromWatchlist', bookId)
   }
 }
 
@@ -319,6 +323,11 @@ const mutations = {
         }
       }
     }
+  },
+  deleteFromWatchlist (state, bookId) {
+    const watchlistBooks = state.watchlistBooks
+    const index = watchlistBooks.indexOf(watchlistBooks.find(book => { return book.id === bookId }))
+    Vue.delete(state.watchlistBooks, index)
   }
 }
 

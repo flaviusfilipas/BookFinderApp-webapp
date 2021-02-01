@@ -178,7 +178,7 @@ export default {
       this.alertModal = true
       this.currentBook = currentBook
     },
-    ...mapActions('booksStore', ['setWatchlistFilters', 'clearFilters', 'addAlert']),
+    ...mapActions('booksStore', ['setWatchlistFilters', 'clearFilters', 'addAlert', 'deleteBookFromWatchlist']),
     addBookAlert () {
       const currentBook = this.currentBook
       const alertOpt = this.alertOpt
@@ -199,7 +199,7 @@ export default {
         persistent: true
       }).onOk(() => {
         // TODO move this operation into store
-        vue.delete(this.wishlist, bookId)
+        this.deleteBookFromWatchlist(bookId)
         this.$q.notify({
           type: 'positive',
           timeout: 500,
