@@ -10,7 +10,7 @@ const state = {
       pages: 384,
       publisher: 'Polirom',
       hasStock: true,
-      hasStockAlert: true,
+      hasStockAlert: false,
       hasPriceAlert: false,
       provider: 'Carturesti',
       price: 64
@@ -39,7 +39,7 @@ const state = {
       publisher: 'Humanitas',
       hasStock: false,
       hasStockAlert: false,
-      hasPriceAlert: true,
+      hasPriceAlert: false,
       provider: 'Elefant',
       price: 64
     }
@@ -149,8 +149,8 @@ const state = {
       label: 'Litera',
       value: 'Litera'
     }, {
-      label: 'Humanits',
-      value: 'Humanits'
+      label: 'Humanitas',
+      value: 'Humanitas'
     }, {
       label: 'Polirom',
       value: 'Polirom'
@@ -249,6 +249,9 @@ const actions = {
   },
   setBookTypesFilter ({ commit }, value) {
     commit('setBookTypesFilter', value)
+  },
+  addAlert ({ commit }, payload) {
+    commit('addAlert', payload)
   }
 }
 
@@ -305,6 +308,17 @@ const mutations = {
     state.filters.publisher = []
     state.filters.type = []
     state.watchlistFilters = []
+  },
+  addAlert (state, payload) {
+    for (let i = 0; i < state.watchlistBooks.length; i++) {
+      if (state.watchlistBooks[i].id === payload.currentBook.id) {
+        if (payload.alertOpt === 'stock') {
+          state.watchlistBooks[i].hasStockAlert = true
+        } else {
+          state.watchlistBooks[i].hasPriceAlert = true
+        }
+      }
+    }
   }
 }
 

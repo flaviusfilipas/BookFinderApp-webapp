@@ -1,5 +1,4 @@
 <template>
-  <!--TODO move header into separate component -->
    <q-layout view="hHh lpR fFf">
      <app-header class="bg-primary text-white" revealHeader include-searchbar include-toolbar-title></app-header>
     <q-page-container>

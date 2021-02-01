@@ -28,7 +28,7 @@
     <div class="col-sm-9 col-xs-12">
       <div class="flex">
         <div class="row">
-            <q-card class="my-card q-pa-sm q-ma-sm" v-for="book in wishlist" :key="book.id">
+            <q-card ref="bookCard" class="my-card q-pa-sm q-ma-sm" v-for="book in wishlist" :key="book.id">
               <q-card-section horizontal>
               <!-- <div class="book-image-container">
                   <img class="book-image" :src="book.imgSource">
@@ -36,8 +36,8 @@
               <q-img :src="book.imgSource" style="height:100%; max-height:190px" height="190px">
             </q-img>
               <q-card-actions class="q-ml-xs" vertical style="border-radius:10px;padding:0px;">
-                <q-btn :class="[isHidden ? 'hidden' : '']"  flat round color="yellow" icon="star" />
-                <q-btn flat round color="warning" icon="add_alert" @click="alertModal =true" >
+                <q-btn :class="[hasAlerts(book) ? '' : 'hidden']"  flat round color="yellow" icon="star" />
+                <q-btn flat round color="warning" icon="add_alert" @click="showAlertsModal(book)" >
                   <q-tooltip>
                     Add alert
                   </q-tooltip>
@@ -76,22 +76,22 @@
         </div>
       </div>
     </div>
-     <q-dialog v-model="alertModal">
+    <q-dialog v-model="alertModal">
       <q-card>
         <q-card-section>
           <div class="text-h6">Choose type of alert:</div>
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-              <q-option-group
-                :options="alertOps"
-                type="radio"
-                v-model="alertOpt"/>
+          <q-option-group
+            :options="alertOps"
+            type="radio"
+            v-model="alertOpt"/>
         </q-card-section>
 
         <q-card-actions align="right" class="text-primary">
           <q-btn flat label="Cancel" v-close-popup />
-          <q-btn flat label="Confirm" @click= "notifyAlert" v-close-popup />
+          <q-btn flat label="Confirm" @click = "addBookAlert" v-close-popup />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -168,11 +168,29 @@ export default {
           value: 'stock'
         }
       ],
-      alertOpt: ''
+      alertOpt: '',
+      currentBook: {}
     }
   },
   methods: {
-    ...mapActions('booksStore', ['setWatchlistFilters', 'clearFilters']),
+    showAlertsModal (currentBook) {
+      this.alertModal = true
+      this.currentBook = currentBook
+      console.log(currentBook)
+    },
+    ...mapActions('booksStore', ['setWatchlistFilters', 'clearFilters', 'addAlert']),
+    addBookAlert () {
+      const currentBook = this.currentBook
+      const alertOpt = this.alertOpt
+      this.addAlert({ currentBook, alertOpt })
+      this.notifyAlert()
+    },
+    hasAlerts (book) {
+      if (book.hasStockAlert || book.hasPriceAlert) {
+        return true
+      }
+      return false
+    },
     deleteFromWatchlist (bookId) {
       this.$q.dialog({
         title: 'Confirm',
