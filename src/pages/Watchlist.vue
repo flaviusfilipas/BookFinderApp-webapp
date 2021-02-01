@@ -36,27 +36,28 @@
               <q-img :src="book.imgSource" style="height:100%; max-height:190px" height="190px">
             </q-img>
               <q-card-actions class="q-ml-xs" vertical style="border-radius:10px;padding:0px;">
-                <q-btn :class="[hasAlerts(book) ? '' : 'hidden']"  flat round color="yellow" icon="star" />
+                <q-btn v-if="hasAlerts(book)" flat round color="yellow" icon="star" />
                 <q-btn flat round color="warning" icon="add_alert" @click="showAlertsModal(book)" >
                   <q-tooltip>
                     Add alert
                   </q-tooltip>
                 </q-btn>
-                    <q-btn-dropdown rounded flat color="red" dropdown-icon="close">
+                <q-btn rounded flat color="red" icon="close" >
+                    <q-menu>
                       <q-list>
-                        <q-item clickable v-close-popup @click="deleteFromWatchlist(book.id)">
-                          <q-item-section>
-                            <q-item-label>Delete from watchlist</q-item-label>
-                          </q-item-section>
-                        </q-item>
-
-                        <q-item clickable v-close-popup @click="deleteAlerts(book.id)">
-                          <q-item-section>
-                            <q-item-label>Delete alerts</q-item-label>
-                          </q-item-section>
-                        </q-item>
-                      </q-list>
-                  </q-btn-dropdown>
+                      <q-item clickable v-close-popup @click="deleteFromWatchlist(book.id)">
+                        <q-item-section>
+                          <q-item-label>Delete from watchlist</q-item-label>
+                        </q-item-section>
+                      </q-item>
+                      <q-item clickable v-close-popup @click="deleteAlerts(book.id)">
+                        <q-item-section>
+                          <q-item-label>Delete alerts</q-item-label>
+                        </q-item-section>
+                      </q-item>
+                    </q-list>
+                  </q-menu>
+                </q-btn>
               </q-card-actions>
             </q-card-section>
             <q-card-section class="q-pa-xs book-info-section">
@@ -176,7 +177,6 @@ export default {
     showAlertsModal (currentBook) {
       this.alertModal = true
       this.currentBook = currentBook
-      console.log(currentBook)
     },
     ...mapActions('booksStore', ['setWatchlistFilters', 'clearFilters', 'addAlert']),
     addBookAlert () {
@@ -232,6 +232,7 @@ export default {
           break
         default: alert('Invalid option')
       }
+      this.alertOpt = ''
     },
     notifyPriceAlert () {
       this.$q.notify({
