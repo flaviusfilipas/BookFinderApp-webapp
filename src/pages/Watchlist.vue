@@ -50,7 +50,7 @@
                           <q-item-label>Delete from watchlist</q-item-label>
                         </q-item-section>
                       </q-item>
-                      <q-item clickable v-close-popup @click="deleteAlerts(book.id)">
+                      <q-item clickable v-close-popup @click="deleteAlerts(book)">
                         <q-item-section>
                           <q-item-label>Delete alerts</q-item-label>
                         </q-item-section>
@@ -77,6 +77,25 @@
         </div>
       </div>
     </div>
+    <q-dialog v-model = "deleteAlertsModal">
+      <q-card>
+        <q-card-section>
+          <div class="text-h6">Choose type of alert to delete:</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <q-option-group
+            :options="deleteAlertOps"
+            type="radio"
+            v-model="deleteAlertOpt"/>
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Cancel" v-close-popup />
+          <q-btn flat label="Confirm" @click = "deleteSomeAlert" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
     <q-dialog v-model="alertModal">
       <q-card>
         <q-card-section>
@@ -141,7 +160,6 @@
 </template>
 
 <script>
-import vue from 'vue'
 import { mapState, mapActions } from 'vuex'
 export default {
   data () {
@@ -169,8 +187,24 @@ export default {
           value: 'stock'
         }
       ],
+      deleteAlertOps: [
+        {
+          label: 'Price alert',
+          value: 'price'
+        },
+        {
+          label: 'Stock alert',
+          value: 'stock'
+        },
+        {
+          label: 'All alerts',
+          value: 'all'
+        }
+      ],
+      deleteAlertOpt: '',
       alertOpt: '',
-      currentBook: {}
+      currentBook: {},
+      deleteAlertsModal: false
     }
   },
   methods: {
@@ -178,7 +212,7 @@ export default {
       this.alertModal = true
       this.currentBook = currentBook
     },
-    ...mapActions('booksStore', ['setWatchlistFilters', 'clearFilters', 'addAlert', 'deleteBookFromWatchlist']),
+    ...mapActions('booksStore', ['setWatchlistFilters', 'clearFilters', 'addAlert', 'deleteBookFromWatchlist', 'deleteAlert']),
     addBookAlert () {
       const currentBook = this.currentBook
       const alertOpt = this.alertOpt
@@ -191,6 +225,9 @@ export default {
       }
       return false
     },
+    hasAllAlerts (book) {
+      return book.hasStockAlert && book.hasPriceAlert
+    },
     deleteFromWatchlist (bookId) {
       this.$q.dialog({
         title: 'Confirm',
@@ -198,7 +235,6 @@ export default {
         cancel: true,
         persistent: true
       }).onOk(() => {
-        // TODO move this operation into store
         this.deleteBookFromWatchlist(bookId)
         this.$q.notify({
           type: 'positive',
@@ -207,21 +243,36 @@ export default {
         })
       })
     },
-    deleteAlerts (bookId) {
-      this.$q.dialog({
-        title: 'Confirm',
-        message: 'Do you really want to delete all the alerts for this book? ',
-        cancel: true,
-        persistent: true
-      }).onOk(() => {
-        // TODO move this operation into store
-        vue.delete(this.wishlist, bookId)
-        this.$q.notify({
-          type: 'positive',
-          timeout: 500,
-          message: 'Succesfully deleted all alerts'
+    deleteAlerts (book) {
+      if (this.hasAllAlerts(book)) {
+        this.deleteAlertsModal = true
+        this.currentBook = book
+      } else {
+        this.$q.dialog({
+          title: 'Confirm',
+          message: 'Do you really want to delete all the alerts for this book? ',
+          cancel: true,
+          persistent: true
+        }).onOk(() => {
+          this.deleteAlertOpt = 'all'
+          this.deleteSomeAlert()
         })
+      }
+      this.deleteAlertOpt = ''
+    },
+    deleteSomeAlert () {
+      const currentBook = this.currentBook
+      const deleteAlertOpt = this.deleteAlertOpt
+      this.deleteAlert({ currentBook, deleteAlertOpt })
+      this.$q.notify({
+        type: 'positive',
+        timeout: 650,
+        message: this.handleNotifyMessage()
       })
+    },
+    handleNotifyMessage () {
+      const noun = this.deleteAlertOpt !== 'all' ? 'alert' : 'alerts'
+      return `Succesfully deleted ${this.deleteAlertOpt} ${noun}`
     },
     notifyAlert () {
       switch (this.alertOpt) {
