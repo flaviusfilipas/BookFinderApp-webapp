@@ -20,9 +20,9 @@
           outlined
           v-model="search"
           placeholder="Search By Title, ISBN, Author or Keyword"
-          @keyup.enter="searchBooks">
+          @keyup.enter="searchBook">
           <template v-slot:append>
-            <q-btn round flat icon="search" @click = "searchBooks"/>
+            <q-btn round flat icon="search" @click="searchBook"/>
           </template>
         </q-input>
       </div>
@@ -30,7 +30,7 @@
 </template>
 
 <script>
-// import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 export default {
   data () {
     return {
@@ -38,30 +38,34 @@ export default {
     }
   },
   methods: {
-    searchBooks () {
-      this.showLoading()
+    // ia cuvantul, face request-urile(asta o sa modifice allBooks din state si dupa face push la )
+
+    searchBook () {
+      this.searchBooks(this.search)
     },
     // getDrinks () {
     //   return this.$axios.get('https://www.thecocktaildb.com/api/json/v1/1/search.php?s=margarita')
     //     .then(response => response.data)
     // },
-    // ...mapActions('booksStore', ['saveDrinks']),
-    showLoading () {
-      this.$q.loading.show({
-        message: 'Searching books'
-      })
-      setTimeout(() => {
-        this.$q.loading.hide()
-        this.$router.push('results')
-      }, 3000)
+    ...mapActions('booksStore', ['searchBooks']),
+    ...mapGetters('bookStore', ['getUnfilteredBooks'])
 
-      // this.getDrinks()
-      //   .then(response => {
-      //     this.saveDrinks(response, response)
-      //     this.$q.loading.hide()
-      //     this.$router.push('results')
-      //   })
-    }
+    // showLoading () {
+    //   // this.$q.loading.show({
+    //   //   message: 'Searching books'
+    //   // })
+    //   // setTimeout(() => {
+    //   //   this.$q.loading.hide()
+    //   //   this.$router.push('results')
+    //   // }, 3000)
+
+    //   this.searchBooks()
+    //     // .then(response => {
+    //     //   this.saveDrinks(response, response)
+    //     //   this.$q.loading.hide()
+    //     //   this.$router.push('results')
+    //     // })
+    // }
   }
 }
 
