@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import axios from 'axios'
 const state = {
   watchlistBooks: [
     {
@@ -45,6 +46,8 @@ const state = {
       price: 64
     }
   ],
+  unfilteredBooks: [],
+  filteredBooks: [],
   books: [
     {
       id: 1,
@@ -256,10 +259,70 @@ const actions = {
   },
   deleteBookFromWatchlist ({ commit }, bookId) {
     commit('deleteFromWatchlist', bookId)
+  },
+  deleteAlert ({ commit }, payload) {
+    commit('deleteAlert', payload)
+  },
+  searchBooks ({ commit }, searchWord) {
+    const SPLASH_URL = 'http://localhost:8050/render.html'
+    const SCRAPYRT_URL = 'http://localhost:9080/crawl.json'
+    const divertaUri = encodeURI(`${SPLASH_URL}?url=https://www.dol.ro/?sn.q=${searchWord}&sn.l=40&sn.s=-score&sn.o=0&forbidden_content_types=text/css,font/*&filters=easylist&images=0`)
+    const carturestiUrl = encodeURIComponent(`https://www.carturesti.ro/product/search/${searchWord}?page=1&id_product_type=26`)
+    const carturestiUri = encodeURI(`${SPLASH_URL}?url=${carturestiUrl}&forbidden_content_types=text/css,font/*&filters=easylist`)
+    const librisUrl = encodeURIComponent(`https://www.libris.ro/?sn.l=30&sn.q=${searchWord}`)
+    const librisUri = encodeURI(`${SPLASH_URL}?url=${librisUrl}&forbidden_content_types=text/css,font/*&filters=easylist`)
+    const librarieNetUri = encodeURI(`${SPLASH_URL}?url=https://www.librarie.net/cautare-rezultate.php?t=${searchWord}&forbidden_content_types=text/css,font/*&filters=easylist`)
+    const elefantUri = encodeURIComponent(`https://www.elefant.ro/search?SearchTerm=${searchWord}&StockAvailability=true&SortValue=bestseller`)
+    const emagUri = encodeURI(`${SPLASH_URL}?url=https://www.emag.ro/search/${searchWord}%20carte?ref=effective_search&forbidden_content_types=text/css,font/*`)
+
+    const divertaReq = axios.get(`${SCRAPYRT_URL}?url=${divertaUri}&spider_name=diverta`)
+    const carturestiReq = axios.get(`${SCRAPYRT_URL}?url=${carturestiUri}&spider_name=carturesti`)
+    const librisReq = axios.get(`${SCRAPYRT_URL}?url=${librisUri}&spider_name=libris`)
+    const librarieNetReq = axios.get(`${SCRAPYRT_URL}?url=${librarieNetUri}&spider_name=librarienet`)
+    const elefantReq = axios.get(`${SCRAPYRT_URL}?url=${elefantUri}&spider_name=elefant`)
+    const emagReq = axios.get(`${SCRAPYRT_URL}?url=${emagUri}&spider_name=emag`)
+    this._vm.$q.loading.show({
+      message: 'Searching books'
+    })
+    axios.all([divertaReq, carturestiReq, librisReq, librarieNetReq, elefantReq, emagReq])
+      .then(axios.spread((...responses) => {
+        const divertaResponse = responses[0].data
+        const carturestiResponse = responses[1].data
+        const librisResponse = responses[2].data
+        const librarieNetResponse = responses[3].data
+        const elefantResponse = responses[4].data
+        const emagResponse = responses[5].data
+        commit('addBooks', { divertaResponse, carturestiResponse, librisResponse, librarieNetResponse, elefantResponse, emagResponse })
+        this._vm.$q.loading.hide()
+        this.$router.push('results')
+      })).catch(errors => {
+      // react on errors.
+      })
   }
 }
 
 const mutations = {
+  addBooks (state, payload) {
+    console.log(payload)
+    state.unfilteredBooks = [...payload.divertaResponse.items, ...payload.carturestiResponse.items,
+      ...payload.librisResponse.items, ...payload.librarieNetResponse.items, ...payload.elefantResponse.items, ...payload.emagResponse.items]
+    console.log(state.unfilteredBooks)
+    const unfilteredBooks = state.unfilteredBooks
+    for (const book of unfilteredBooks) {
+      const existentBook = state.filteredBooks.find(element => book.isbn !== null && element.isbn === book.isbn)
+      if (existentBook) {
+        existentBook.offers.push(book.offer)
+      } else {
+        // eslint-disable-next-line dot-notation
+        const filteredBook = { ...book, offers: [] }
+        filteredBook.offers.push(book.offer)
+        state.filteredBooks.push(filteredBook)
+      }
+    }
+
+    console.log(state.filteredBooks)
+  },
+
   addToWishlist (state, payload) {
     for (let i = 0; i < state.offers.length; i++) {
       if (state.offers[i].id === payload.id) {
@@ -328,12 +391,32 @@ const mutations = {
     const watchlistBooks = state.watchlistBooks
     const index = watchlistBooks.indexOf(watchlistBooks.find(book => { return book.id === bookId }))
     Vue.delete(state.watchlistBooks, index)
+  },
+  deleteAlert (state, payload) {
+    for (let i = 0; i < state.watchlistBooks.length; i++) {
+      if (state.watchlistBooks[i].id === payload.currentBook.id) {
+        if (payload.deleteAlertOpt === 'stock') {
+          state.watchlistBooks[i].hasStockAlert = false
+        } else if (payload.deleteAlertOpt === 'price') {
+          state.watchlistBooks[i].hasPriceAlert = false
+        } else {
+          state.watchlistBooks[i].hasPriceAlert = false
+          state.watchlistBooks[i].hasStockAlert = false
+        }
+      }
+    }
   }
 }
 
 const getters = {
   getDrinks: (state) => {
     return state.drinks
+  },
+  getUnfilteredBooks: (state) => {
+    return state.unfilteredBooks
+  },
+  getFilteredBooks: (state) => {
+    return state.filteredBooks
   },
   getWishlistBooks: (state) => {
     if (state.watchlistFilters.length > 0) {
