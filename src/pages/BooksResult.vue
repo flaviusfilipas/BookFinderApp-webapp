@@ -34,9 +34,9 @@
     <div class="col-sm-9 col-xs-12">
       <div class="flex">
           <div class="row">
-            <q-card class="my-card q-ma-sm" v-for="book in booksResults" :key="book.id">
+            <q-card class="my-card q-ma-sm" v-for="book in booksResults" :key="book.isbn">
               <div class="book-image-container">
-                  <img class="book-image q-ma-md" :src="book.imgSource">
+                  <img class="book-image q-ma-md" :src="book.imgUrl">
                </div>
               <q-card-section class="q-pa-xs" >
                   <div class="book-info-area text-subtitle2 text-center" v-text="book.title">
@@ -46,10 +46,10 @@
               </q-card-section>
               <q-card-section class="q-pa-xs"   >
                 <div class="book-info-area text-bold text-center">ISBN: {{book.isbn}}</div>
-                <div class="book-info-area text-italic text-center">{{book.type}}, {{book.pages}} pages, publisher {{book.publisher}}</div>
+                <div class="book-info-area text-italic text-center">{{book.coverType}} {{book.coverType != null ? ',' + book.numberOfPages : book.numberOfPages}} pages, publisher {{book.publisher}}</div>
               </q-card-section>
               <q-card-actions class="q-pa-xs">
-                <q-btn flat @click="offersModal = true"> Offers</q-btn>
+                <q-btn flat @click="showOffersModal(book)"> Offers</q-btn>
               </q-card-actions>
           </q-card>
         </div>
@@ -84,8 +84,8 @@
             </tr>
           </thead>
           <tbody class="bg-grey-3">
-            <tr v-for="offer in offers" :key="offer.id">
-              <td class="text-left">{{offer.storeName}}</td>
+            <tr v-for="offer in currentOffer" :key="offer.id">
+              <td class="text-left">{{offer.provider}}</td>
               <td class="text-right" style="font-size:1.5em">
                 <div v-if="offer.hasStock" >
                   <q-icon class="text-positive" name="check"/>
@@ -97,10 +97,10 @@
                 </div>
               </td>
               <td class="text-right">{{offer.price.toFixed(2)}}</td>
-              <td class="text-center">{{offer.transportaionPrice.toFixed(2)}}</td>
-              <td class="text-right">{{(offer.price + offer.transportaionPrice).toFixed(2)}}</td>
+              <td class="text-center">{{offer.transportationCost.toFixed(2)}}</td>
+              <td class="text-right">{{(offer.price + offer.transportationCost).toFixed(2)}}</td>
               <td class="text-center">
-                  <q-btn round flat icon="shopping_cart" @click="redirectToProvider(offer.bookUrl)" >
+                  <q-btn round flat icon="shopping_cart" @click="redirectToProvider(offer.link)" >
                     <q-tooltip>
                         Go to provider's page
                     </q-tooltip>
@@ -191,12 +191,16 @@ export default {
       current: 1,
       offersModal: false,
       filterModal: false,
-      isPressed: false
+      isPressed: false,
+      currentOffer: []
     }
   },
   computed: {
+    // booksResults () {
+    //   return this.$store.getters['booksStore/getBooks']
+    // },
     booksResults () {
-      return this.$store.getters['booksStore/getBooks']
+      return this.$store.getters['booksStore/getFilteredBooks']
     },
     authors () {
       return this.$store.getters['booksStore/getAuthors']
@@ -261,6 +265,10 @@ export default {
     },
     clearAllFilters () {
       this.clearFilters()
+    },
+    showOffersModal (currentBook) {
+      this.offersModal = true
+      this.currentOffer = currentBook.offers
     }
   }
 }
