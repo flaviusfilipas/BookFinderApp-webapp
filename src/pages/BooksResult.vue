@@ -45,8 +45,8 @@
                   <div class="book-info-area text-caption text-center" >By: {{book.author}}</div>
               </q-card-section>
               <q-card-section class="q-pa-xs"   >
-                <div class="book-info-area text-bold text-center">ISBN: {{book.isbn}}</div>
-                <div class="book-info-area text-italic text-center">{{book.coverType}} {{book.coverType != null ? ',' + book.numberOfPages : book.numberOfPages}} pages, publisher {{book.publisher}}</div>
+                <div :class="[book.isbn !== null ? 'book-info-area text-bold text-center' : 'book-info-area text-bold text-center invisible']">ISBN: {{book.isbn}}</div>
+                <div class="book-info-area text-italic text-center">{{ book | processBookInformation }}</div>
               </q-card-section>
               <q-card-actions class="q-pa-xs">
                 <q-btn flat @click="showOffersModal(book)"> Offers</q-btn>
@@ -196,9 +196,6 @@ export default {
     }
   },
   computed: {
-    // booksResults () {
-    //   return this.$store.getters['booksStore/getBooks']
-    // },
     booksResults () {
       return this.$store.getters['booksStore/getFilteredBooks']
     },
@@ -269,6 +266,15 @@ export default {
     showOffersModal (currentBook) {
       this.offersModal = true
       this.currentOffer = currentBook.offers
+    }
+  },
+  filters: {
+    processBookInformation (book) {
+      const bookInfo = [book.coverType, `${book.numberOfPages} pages`, `publisher ${book.publisher}`]
+      if (bookInfo !== null && bookInfo !== undefined) {
+        return bookInfo.filter(info => (info !== null && info !== undefined) && (!info.includes('null') && !info.includes('undefined'))).join(', ')
+      }
+      return 'Information currently unavailable '
     }
   }
 }
