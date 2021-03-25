@@ -124,63 +124,9 @@ const state = {
       publisher: 'Experiment'
     }
   ],
-  authors: [
-    {
-      label: 'Yuval Noah Harari',
-      value: 'Yuval Noah Harari'
-    }, {
-      label: 'John Hands',
-      value: 'John Hands'
-    }, {
-      label: 'Becky Albertalli',
-      value: 'Becky Albertalli'
-    }, {
-      label: 'Francois Savaier',
-      value: 'Francois Savaier'
-    }, {
-      label: 'Silvana Condemi',
-      value: 'Silvana Condemi'
-    }, {
-      label: 'David Vandermeulen',
-      value: 'David Vandermeulen'
-    }, {
-      label: 'Daniel Casanave',
-      value: 'Daniel Casanave'
-    }
-  ],
-  publishers: [
-    {
-      label: 'Litera',
-      value: 'Litera'
-    }, {
-      label: 'Humanitas',
-      value: 'Humanitas'
-    }, {
-      label: 'Polirom',
-      value: 'Polirom'
-    }, {
-      label: 'Experiment',
-      value: 'Experiment'
-    }, {
-      label: 'Vintage Publishing',
-      value: 'Vintage Publishing'
-    }, {
-      label: 'Vintage',
-      value: 'Vintage'
-    }, {
-      label: 'Epica',
-      value: 'Epica'
-    }
-  ],
-  bookTypes: [
-    {
-      label: 'Hardcover',
-      value: 'Hardcover'
-    }, {
-      label: 'Paperback',
-      value: 'Paperback'
-    }
-  ],
+  authors: [],
+  publishers: [],
+  bookTypes: [],
   offers: [
     {
       id: 1,
@@ -308,18 +254,44 @@ const mutations = {
       ...payload.librisResponse.items, ...payload.librarieNetResponse.items, ...payload.elefantResponse.items, ...payload.emagResponse.items]
     console.log(state.unfilteredBooks)
     const unfilteredBooks = state.unfilteredBooks
+    const authors = []
+    const publishers = []
+    const coverTypes = []
     for (const book of unfilteredBooks) {
       const existentBook = state.filteredBooks.find(element => book.isbn !== null && element.isbn === book.isbn)
       if (existentBook) {
         existentBook.offers.push(book.offer)
       } else {
         // eslint-disable-next-line dot-notation
-        const filteredBook = { ...book, offers: [] }
+        const filteredBook = { ...book, offers: [], isAddedToWatchlist: false }
+        const author = filteredBook.author
+        const publisher = filteredBook.publisher
+        const coverType = filteredBook.coverType
+        if (author !== null && author !== undefined) {
+          authors.push({ value: author, label: author })
+        }
+        if (publisher !== null && publisher !== undefined) {
+          publishers.push({ value: publisher, label: publisher })
+        }
+        if (coverType !== null && coverType !== undefined) {
+          coverTypes.push({ value: coverType, label: coverType })
+        }
         filteredBook.offers.push(book.offer)
         state.filteredBooks.push(filteredBook)
       }
     }
-
+    state.authors = Array.from(new Set(authors.map(author => author.value)))
+      .map(value => {
+        return authors.find(author => author.value.trim().toUpperCase() === value.trim().toUpperCase())
+      })
+    state.publishers = Array.from(new Set(publishers.map(publisher => publisher.value)))
+      .map(value => {
+        return publishers.find(publisher => publisher.value.trim().toUpperCase() === value.trim().toUpperCase())
+      })
+    state.bookTypes = Array.from(new Set(coverTypes.map(coverType => coverType.value)))
+      .map(value => {
+        return coverTypes.find(coverType => coverType.value.trim().toUpperCase() === value.trim().toUpperCase())
+      })
     console.log(state.filteredBooks)
   },
 
