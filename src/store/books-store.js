@@ -127,6 +127,7 @@ const state = {
   authors: [],
   publishers: [],
   bookTypes: [],
+  currentOffer: [],
   offers: [
     {
       id: 1,
@@ -173,7 +174,7 @@ const state = {
   filters: {
     author: [],
     publisher: [],
-    type: []
+    coverType: []
   },
   watchlistFilters: []
 }
@@ -212,35 +213,41 @@ const actions = {
   searchBooks ({ commit }, searchWord) {
     const SPLASH_URL = 'http://localhost:8050/render.html'
     const SCRAPYRT_URL = 'http://localhost:9080/crawl.json'
-    const divertaUri = encodeURI(`${SPLASH_URL}?url=https://www.dol.ro/?sn.q=${searchWord}&sn.l=40&sn.s=-score&sn.o=0&forbidden_content_types=text/css,font/*&filters=easylist&images=0`)
     const carturestiUrl = encodeURIComponent(`https://www.carturesti.ro/product/search/${searchWord}?page=1&id_product_type=26`)
     const carturestiUri = encodeURI(`${SPLASH_URL}?url=${carturestiUrl}&forbidden_content_types=text/css,font/*&filters=easylist`)
-    const librisUrl = encodeURIComponent(`https://www.libris.ro/?sn.l=30&sn.q=${searchWord}`)
-    const librisUri = encodeURI(`${SPLASH_URL}?url=${librisUrl}&forbidden_content_types=text/css,font/*&filters=easylist`)
-    const librarieNetUri = encodeURI(`${SPLASH_URL}?url=https://www.librarie.net/cautare-rezultate.php?t=${searchWord}&forbidden_content_types=text/css,font/*&filters=easylist`)
-    const elefantUri = encodeURIComponent(`https://www.elefant.ro/search?SearchTerm=${searchWord}&StockAvailability=true&SortValue=bestseller`)
-    const emagUri = encodeURI(`${SPLASH_URL}?url=https://www.emag.ro/search/${searchWord}%20carte?ref=effective_search&forbidden_content_types=text/css,font/*`)
-
-    const divertaReq = axios.get(`${SCRAPYRT_URL}?url=${divertaUri}&spider_name=diverta`)
     const carturestiReq = axios.get(`${SCRAPYRT_URL}?url=${carturestiUri}&spider_name=carturesti`)
-    const librisReq = axios.get(`${SCRAPYRT_URL}?url=${librisUri}&spider_name=libris`)
-    const librarieNetReq = axios.get(`${SCRAPYRT_URL}?url=${librarieNetUri}&spider_name=librarienet`)
-    const elefantReq = axios.get(`${SCRAPYRT_URL}?url=${elefantUri}&spider_name=elefant`)
-    const emagReq = axios.get(`${SCRAPYRT_URL}?url=${emagUri}&spider_name=emag`)
     this._vm.$q.loading.show({
       message: 'Searching books'
     })
-    axios.all([divertaReq, carturestiReq, librisReq, librarieNetReq, elefantReq, emagReq])
+    carturestiReq.then(response => {
+      commit('addBooks', response.data)
+      this._vm.$q.loading.hide()
+      this.$router.push('results')
+    }).catch(errors => {})
+  },
+  findCurrentOffers ({ commit }, currentBook) {
+    console.log('current book isbn ' + currentBook.isbn)
+    const SPLASH_URL = 'http://localhost:8050/render.html'
+    const SCRAPYRT_URL = 'http://localhost:9080/crawl.json'
+    const divertaUri = encodeURI(`${SPLASH_URL}?url=https://www.dol.ro/?sn.q=${currentBook.isbn}&forbidden_content_types=text/css,font/*&filters=easylist&images=0`)
+    const librisUrl = `https://www.libris.ro/?sn.q=${currentBook.isbn}`
+    const librisUri = encodeURI(`${SPLASH_URL}?url=${librisUrl}&forbidden_content_types=text/css,font/*&filters=easylist`)
+    const librarieNetUri = encodeURI(`${SPLASH_URL}?url=https://www.librarie.net/cautare-rezultate.php?t=${currentBook.title}&forbidden_content_types=text/css,font/*&filters=easylist`)
+    const emagUri = encodeURI(`${SPLASH_URL}?url=https://www.emag.ro/search/${currentBook.isbn}?ref=effective_search&forbidden_content_types=text/css,font/*`)
+
+    const divertaReq = axios.get(`${SCRAPYRT_URL}?url=${divertaUri}&spider_name=diverta`)
+    const librisReq = axios.get(`${SCRAPYRT_URL}?url=${librisUri}&spider_name=libris`)
+    const librarieNetReq = axios.get(`${SCRAPYRT_URL}?url=${librarieNetUri}&spider_name=librarienet`)
+    const emagReq = axios.get(`${SCRAPYRT_URL}?url=${emagUri}&spider_name=emag`)
+
+    axios.all([divertaReq, librisReq, librarieNetReq, emagReq])
       .then(axios.spread((...responses) => {
         const divertaResponse = responses[0].data
-        const carturestiResponse = responses[1].data
-        const librisResponse = responses[2].data
-        const librarieNetResponse = responses[3].data
-        const elefantResponse = responses[4].data
-        const emagResponse = responses[5].data
-        commit('addBooks', { divertaResponse, carturestiResponse, librisResponse, librarieNetResponse, elefantResponse, emagResponse })
-        this._vm.$q.loading.hide()
-        this.$router.push('results')
+        const librisResponse = responses[1].data
+        const librarieNetResponse = responses[2].data
+        const emagResponse = responses[3].data
+        console.log(responses)
+        commit('buildOffer', { divertaResponse, librisResponse, librarieNetResponse, emagResponse, currentBook })
       })).catch(errors => {
       // react on errors.
       })
@@ -248,50 +255,45 @@ const actions = {
 }
 
 const mutations = {
+  buildOffer (state, payload) {
+    console.log('offer')
+    console.log(payload)
+    state.currentOffer = []
+    state.currentOffer.push(payload.currentBook.offer)
+    state.currentOffer.push(payload.divertaResponse.items[0].offer)
+    state.currentOffer.push(payload.emagResponse.items[0].offer)
+    state.currentOffer.push(payload.librisResponse.items[0].offer)
+
+    const librarieNetBook = payload.librarieNetResponse.items.find(element => element.isbn === payload.currentBook.isbn)
+
+    state.currentOffer.push(librarieNetBook.offer)
+  },
   addBooks (state, payload) {
     console.log(payload)
-    state.unfilteredBooks = [...payload.divertaResponse.items, ...payload.carturestiResponse.items,
-      ...payload.librisResponse.items, ...payload.librarieNetResponse.items, ...payload.elefantResponse.items, ...payload.emagResponse.items]
-    console.log(state.unfilteredBooks)
-    const unfilteredBooks = state.unfilteredBooks
     const authors = []
     const publishers = []
     const coverTypes = []
-    for (const book of unfilteredBooks) {
-      const existentBook = state.filteredBooks.find(element => book.isbn !== null && element.isbn === book.isbn)
-      if (existentBook) {
-        existentBook.offers.push(book.offer)
-      } else {
-        // eslint-disable-next-line dot-notation
-        const filteredBook = { ...book, offers: [], isAddedToWatchlist: false }
-        const author = filteredBook.author
-        const publisher = filteredBook.publisher
-        const coverType = filteredBook.coverType
-        if (author !== null && author !== undefined) {
-          authors.push({ value: author, label: author })
-        }
-        if (publisher !== null && publisher !== undefined) {
-          publishers.push({ value: publisher, label: publisher })
-        }
-        if (coverType !== null && coverType !== undefined) {
-          coverTypes.push({ value: coverType, label: coverType })
-        }
-        filteredBook.offers.push(book.offer)
-        state.filteredBooks.push(filteredBook)
+    const list = payload.items.map(element => {
+      const book = { ...element, offers: [], isAddedToWatchlist: false }
+      book.offers.push(element.offer)
+      const author = book.author
+      const publisher = book.publisher
+      const coverType = book.coverType
+      if (author !== null && author !== undefined) {
+        authors.push({ value: author, label: author })
       }
-    }
-    state.authors = Array.from(new Set(authors.map(author => author.value)))
-      .map(value => {
-        return authors.find(author => author.value.trim().toUpperCase() === value.trim().toUpperCase())
-      })
-    state.publishers = Array.from(new Set(publishers.map(publisher => publisher.value)))
-      .map(value => {
-        return publishers.find(publisher => publisher.value.trim().toUpperCase() === value.trim().toUpperCase())
-      })
-    state.bookTypes = Array.from(new Set(coverTypes.map(coverType => coverType.value)))
-      .map(value => {
-        return coverTypes.find(coverType => coverType.value.trim().toUpperCase() === value.trim().toUpperCase())
-      })
+      if (publisher !== null && publisher !== undefined) {
+        publishers.push({ value: publisher, label: publisher })
+      }
+      if (coverType !== null && coverType !== undefined) {
+        coverTypes.push({ value: coverType, label: coverType })
+      }
+      return book
+    })
+    state.filteredBooks = list
+    state.authors = [...new Map(authors.map(item => [item.value, item])).values()]
+    state.publishers = [...new Map(publishers.map(item => [item.value, item])).values()]
+    state.bookTypes = [...new Map(coverTypes.map(item => [item.value, item])).values()]
     console.log(state.filteredBooks)
   },
 
@@ -333,7 +335,7 @@ const mutations = {
         filters.push(value[i])
       }
     }
-    state.filters.type = filters
+    state.filters.coverType = filters
   },
   setWatchlistFilters (state, value) {
     const filters = []
@@ -345,7 +347,7 @@ const mutations = {
   clearFilters (state) {
     state.filters.author = []
     state.filters.publisher = []
-    state.filters.type = []
+    state.filters.coverType = []
     state.watchlistFilters = []
   },
   addAlert (state, payload) {
@@ -381,9 +383,6 @@ const mutations = {
 }
 
 const getters = {
-  getDrinks: (state) => {
-    return state.drinks
-  },
   getUnfilteredBooks: (state) => {
     return state.unfilteredBooks
   },
@@ -412,17 +411,20 @@ const getters = {
   },
   getBooks: (state) => {
     const filterKeys = Object.keys(state.filters)
-    const getValue = value => (typeof value === 'string' ? value.toUpperCase() : value)
-    const filteredBooks = state.books.filter(item => {
+    const filteredBooks = state.filteredBooks.filter(item => {
       return filterKeys.every(key => {
         if (!state.filters[key].length) return true
-        return state.filters[key].find(filter => getValue(item[key]).includes(getValue(filter)))
+        return state.filters[key].find(filter => {
+          if (item[key] !== null && item[key] !== undefined) {
+            return item[key].includes(filter)
+          } return false
+        })
       })
     })
     if (state.filters) {
       return filteredBooks
     }
-    return state.books
+    return state.filteredBooks
   },
   getAuthors: (state) => {
     return state.authors
@@ -435,6 +437,9 @@ const getters = {
   },
   getOffers: (state) => {
     return state.offers
+  },
+  getCurrentOffer: (state) => {
+    return state.currentOffer
   }
 }
 
