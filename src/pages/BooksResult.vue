@@ -191,13 +191,12 @@ export default {
       current: 1,
       offersModal: false,
       filterModal: false,
-      isPressed: false,
-      currentOffer: []
+      isPressed: false
     }
   },
   computed: {
     booksResults () {
-      return this.$store.getters['booksStore/getFilteredBooks']
+      return this.$store.getters['booksStore/getBooks']
     },
     authors () {
       return this.$store.getters['booksStore/getAuthors']
@@ -210,6 +209,9 @@ export default {
     },
     offers () {
       return this.$store.getters['booksStore/getOffers']
+    },
+    currentOffer () {
+      return this.$store.getters['booksStore/getCurrentOffer']
     },
     ...mapState('authStore', ['loggedIn']),
     ...mapState('booksStore', ['filters']),
@@ -233,7 +235,7 @@ export default {
     },
     optTypes: {
       get () {
-        return this.filters.type
+        return this.filters.coverType
       },
       set (value) {
         console.log(value)
@@ -242,7 +244,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions('booksStore', ['addToWishlist', 'setAuthorsFilter', 'setPublishersFilter', 'filterBooks', 'clearFilters', 'setBookTypesFilter']),
+    ...mapActions('booksStore', ['addToWishlist', 'setAuthorsFilter', 'setPublishersFilter',
+      'filterBooks', 'clearFilters', 'setBookTypesFilter', 'findCurrentOffers']),
     addToWatchlist (offer) {
       this.addToWishlist(offer)
       if (this.loggedIn) {
@@ -265,7 +268,7 @@ export default {
     },
     showOffersModal (currentBook) {
       this.offersModal = true
-      this.currentOffer = currentBook.offers
+      this.findCurrentOffers(currentBook)
     }
   },
   filters: {
