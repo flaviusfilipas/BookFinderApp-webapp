@@ -96,9 +96,9 @@
                     <q-tooltip>Item is not in stock</q-tooltip>
                 </div>
               </td>
-              <td class="text-right">{{offer.price.toFixed(2)}}</td>
+              <td class="text-right">{{offer.price !== null ? offer.price.toFixed(2) : 'Indisponibil'}}</td>
               <td class="text-center">{{offer.transportationCost.toFixed(2)}}</td>
-              <td class="text-right">{{(offer.price + offer.transportationCost).toFixed(2)}}</td>
+              <td class="text-right">{{offer.price !== null ? (offer.price + offer.transportationCost).toFixed(2) : 'Indisponibil'}}</td>
               <td class="text-center">
                   <q-btn round flat icon="shopping_cart" @click="redirectToProvider(offer.link)" >
                     <q-tooltip>
@@ -117,6 +117,10 @@
           </tbody>
         </q-markup-table>
       </q-card-section>
+      <q-inner-loading :showing="isLoadingSpinnerVisible.isHidden">
+        <div>Searching best offers</div>
+        <q-spinner-gears size="50px" color="primary" />
+      </q-inner-loading>
     </q-card>
   </q-dialog>
   <q-drawer
@@ -183,7 +187,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 export default {
   data () {
     return {
@@ -195,6 +199,7 @@ export default {
     }
   },
   computed: {
+    // TODO replace with mapGetters
     booksResults () {
       return this.$store.getters['booksStore/getBooks']
     },
@@ -215,6 +220,7 @@ export default {
     },
     ...mapState('authStore', ['loggedIn']),
     ...mapState('booksStore', ['filters']),
+    ...mapGetters('booksStore', ['isLoadingSpinnerVisible']),
     optAuthors: {
       get () {
         return this.filters.author
@@ -243,9 +249,15 @@ export default {
       }
     }
   },
+  watch: {
+    currentOffer (newValue) {
+      this.setOffersLoadingSpinner({ value: false })
+      console.log('Changed ')
+    }
+  },
   methods: {
     ...mapActions('booksStore', ['addToWishlist', 'setAuthorsFilter', 'setPublishersFilter',
-      'filterBooks', 'clearFilters', 'setBookTypesFilter', 'findCurrentOffers']),
+      'filterBooks', 'clearFilters', 'setBookTypesFilter', 'findCurrentOffers', 'setOffersLoadingSpinner']),
     addToWatchlist (offer) {
       this.addToWishlist(offer)
       if (this.loggedIn) {

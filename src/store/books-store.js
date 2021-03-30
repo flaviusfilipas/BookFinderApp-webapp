@@ -128,6 +128,7 @@ const state = {
   publishers: [],
   bookTypes: [],
   currentOffer: [],
+  isLoadingSpinnerVisible: { isHidden: true },
   offers: [
     {
       id: 1,
@@ -210,6 +211,9 @@ const actions = {
   deleteAlert ({ commit }, payload) {
     commit('deleteAlert', payload)
   },
+  setOffersLoadingSpinner ({ commit }, payload) {
+    commit('setOffersLoadingSpinner', payload)
+  },
   searchBooks ({ commit }, searchWord) {
     const SPLASH_URL = 'http://localhost:8050/render.html'
     const SCRAPYRT_URL = 'http://localhost:9080/crawl.json'
@@ -229,41 +233,58 @@ const actions = {
     console.log('current book isbn ' + currentBook.isbn)
     const SPLASH_URL = 'http://localhost:8050/render.html'
     const SCRAPYRT_URL = 'http://localhost:9080/crawl.json'
-    const divertaUri = encodeURI(`${SPLASH_URL}?url=https://www.dol.ro/?sn.q=${currentBook.isbn}&forbidden_content_types=text/css,font/*&filters=easylist&images=0`)
+    // const divertaUri = encodeURI(`${SPLASH_URL}?url=https://www.dol.ro/?sn.q=${currentBook.isbn}&forbidden_content_types=text/css,font/*&filters=easylist&images=0`)
     const librisUrl = `https://www.libris.ro/?sn.q=${currentBook.isbn}`
     const librisUri = encodeURI(`${SPLASH_URL}?url=${librisUrl}&forbidden_content_types=text/css,font/*&filters=easylist`)
     const librarieNetUri = encodeURI(`${SPLASH_URL}?url=https://www.librarie.net/cautare-rezultate.php?t=${currentBook.title}&forbidden_content_types=text/css,font/*&filters=easylist`)
     const emagUri = encodeURI(`${SPLASH_URL}?url=https://www.emag.ro/search/${currentBook.isbn}?ref=effective_search&forbidden_content_types=text/css,font/*`)
 
-    const divertaReq = axios.get(`${SCRAPYRT_URL}?url=${divertaUri}&spider_name=diverta`)
+    // const divertaReq = axios.get(`${SCRAPYRT_URL}?url=${divertaUri}&spider_name=diverta`)
     const librisReq = axios.get(`${SCRAPYRT_URL}?url=${librisUri}&spider_name=libris`)
     const librarieNetReq = axios.get(`${SCRAPYRT_URL}?url=${librarieNetUri}&spider_name=librarienet`)
     const emagReq = axios.get(`${SCRAPYRT_URL}?url=${emagUri}&spider_name=emag`)
-
-    axios.all([divertaReq, librisReq, librarieNetReq, emagReq])
+    const elefantUri = encodeURIComponent(`https://www.elefant.ro/search?SearchTerm=${currentBook.isbn}`)
+    const elefantReq = axios.get(`${SCRAPYRT_URL}?url=${elefantUri}&spider_name=elefant`)
+    const booksExpressUri = encodeURIComponent(`https://www.books-express.ro/search?q=${currentBook.isbn}`)
+    const booksExpressReq = axios.get(`${SCRAPYRT_URL}?url=${booksExpressUri}&spider_name=booksExpress&callback=parse_book_info`)
+    // axios.all([divertaReq, librisReq, librarieNetReq, emagReq, elefantReq, booksExpressReq])
+    // TODO change when diverta is back
+    console.log('intru in axios')
+    // commit('setOffersLoadingSpinner', true)
+    axios.all([librisReq, librarieNetReq, emagReq, elefantReq, booksExpressReq])
       .then(axios.spread((...responses) => {
-        const divertaResponse = responses[0].data
-        const librisResponse = responses[1].data
-        const librarieNetResponse = responses[2].data
-        const emagResponse = responses[3].data
+        const divertaResponse = { items: [] }// responses[0].data
+        const librisResponse = responses[0].data
+        const librarieNetResponse = responses[1].data
+        const emagResponse = responses[2].data
+        const elefantResponse = responses[3].data
+        const booksExpressResponse = responses[4].data
         console.log(responses)
-        commit('buildOffer', { divertaResponse, librisResponse, librarieNetResponse, emagResponse, currentBook })
+        commit('buildOffer', { divertaResponse, librisResponse, librarieNetResponse, emagResponse, elefantResponse, booksExpressResponse, currentBook })
+        // commit('setOffersLoadingSpinner', { value: false })
       })).catch(errors => {
       // react on errors.
       })
+    console.log('am iesit din axios')
   }
 }
 
 const mutations = {
+  setOffersLoadingSpinner (state, payload) {
+    // Vue.set(state.isLoadingSpinnerVisible, 'isHidden', payload.value)
+    state.isLoadingSpinnerVisible.isHidden = payload.value
+  },
   buildOffer (state, payload) {
     console.log('offer')
     console.log(payload)
     state.currentOffer = []
     state.currentOffer.push(payload.currentBook.offer)
-    state.currentOffer.push(payload.divertaResponse.items[0].offer)
-    state.currentOffer.push(payload.emagResponse.items[0].offer)
-    state.currentOffer.push(payload.librisResponse.items[0].offer)
-
+    // eslint-disable-next-line no-unused-vars
+    for (const [key, value] of Object.entries(payload)) {
+      if (value.items.length > 0) {
+        state.currentOffer.push(value.items[0].offer)
+      }
+    }
     const librarieNetBook = payload.librarieNetResponse.items.find(element => element.isbn === payload.currentBook.isbn)
 
     state.currentOffer.push(librarieNetBook.offer)
@@ -440,6 +461,9 @@ const getters = {
   },
   getCurrentOffer: (state) => {
     return state.currentOffer
+  },
+  isLoadingSpinnerVisible: (state) => {
+    return state.isLoadingSpinnerVisible
   }
 }
 
