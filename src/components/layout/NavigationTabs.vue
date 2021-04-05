@@ -1,9 +1,15 @@
 <template>
   <q-tabs>
-    <q-input :class= "[includeSearchbar ? 'header-searchbar stretch' : 'hidden']" dark dense standout v-model="text">
+    <q-input :class= "[includeSearchbar ? 'header-searchbar stretch' : 'hidden']"
+      dark
+      dense
+      standout
+      v-model="searchText"
+      placeholder="Search By Title, ISBN, Author or Keyword"
+      @keyup.enter="search">
       <template v-slot:append>
-        <q-icon v-if="text === ''" name="search" />
-        <q-icon v-else name="clear" class="cursor-pointer" @click="text = ''" />
+        <q-icon v-model='searchText' name="search" @click='search' />
+        <!-- <q-icon v name="clear" class="cursor-pointer" @click="text = ''" /> -->
       </template>
     </q-input>
       <q-route-tab
@@ -24,7 +30,7 @@
 
 <script>
 import UserAccountAvatar from './UserAccountAvatar.vue'
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 export default {
   components: { UserAccountAvatar },
   props: {
@@ -35,7 +41,14 @@ export default {
   },
   data () {
     return {
-      text: ''
+      text: '',
+      searchText: ''
+    }
+  },
+  methods: {
+    ...mapActions('booksStore', ['searchBooks']),
+    search () {
+      this.searchBooks(this.searchText)
     }
   },
   computed: {
