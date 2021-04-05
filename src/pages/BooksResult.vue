@@ -55,17 +55,17 @@
         </div>
       </div>
     </div>
-    <q-dialog v-model="offersModal" full-width>
+    <q-dialog ref='offersDialog' v-model="offersModal" full-width persistent>
     <q-card>
      <q-card-section class="row items-center q-pb-none">
           <div class="text-h6">Offers</div>
           <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
+          <q-btn @click='clearOfferState' icon="close" flat round dense/>
         </q-card-section>
 
       <q-card-section class="q-pt-none">
         <q-markup-table class="q-ma-sm" flat bordered>
-          <thead class="bg-another">
+          <thead v-if="currentOffer.length > 0" class="bg-another">
             <tr>
               <th class="text-left">Provider</th>
               <th class="text-right">Stock</th>
@@ -117,9 +117,9 @@
           </tbody>
         </q-markup-table>
       </q-card-section>
-      <q-inner-loading :showing="isLoadingSpinnerVisible.isHidden">
-        <div>Searching best offers</div>
-        <q-spinner-gears size="50px" color="primary" />
+      <q-inner-loading :showing="isOffersLoadingSpinnerVisible">
+        <div>Searching best offers from</div>
+        <q-spinner-gears size="50px" color="bg-blue-9" />
       </q-inner-loading>
     </q-card>
   </q-dialog>
@@ -187,7 +187,7 @@
 </template>
 
 <script>
-import { mapActions, mapState, mapGetters } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 export default {
   data () {
     return {
@@ -195,7 +195,8 @@ export default {
       current: 1,
       offersModal: false,
       filterModal: false,
-      isPressed: false
+      isPressed: false,
+      isOffersLoadingSpinnerVisible: false
     }
   },
   computed: {
@@ -216,11 +217,11 @@ export default {
       return this.$store.getters['booksStore/getOffers']
     },
     currentOffer () {
-      return this.$store.getters['booksStore/getCurrentOffer']
+      const currentOffer = [...this.$store.getters['booksStore/getCurrentOffer']]
+      return currentOffer.sort((a, b) => { return (a.price + a.transportationCost) - (b.price + b.transportationCost) })
     },
     ...mapState('authStore', ['loggedIn']),
     ...mapState('booksStore', ['filters']),
-    ...mapGetters('booksStore', ['isLoadingSpinnerVisible']),
     optAuthors: {
       get () {
         return this.filters.author
@@ -251,13 +252,14 @@ export default {
   },
   watch: {
     currentOffer (newValue) {
-      this.setOffersLoadingSpinner({ value: false })
-      console.log('Changed ')
+      this.isOffersLoadingSpinnerVisible = false
+      console.log('Changed currentOffer ')
+      console.log(newValue)
     }
   },
   methods: {
     ...mapActions('booksStore', ['addToWishlist', 'setAuthorsFilter', 'setPublishersFilter',
-      'filterBooks', 'clearFilters', 'setBookTypesFilter', 'findCurrentOffers', 'setOffersLoadingSpinner']),
+      'filterBooks', 'clearFilters', 'setBookTypesFilter', 'findCurrentOffers', 'clearCurrentOffer']),
     addToWatchlist (offer) {
       this.addToWishlist(offer)
       if (this.loggedIn) {
@@ -271,7 +273,10 @@ export default {
         this.$router.push('/login')
       }
     },
-
+    clearOfferState () {
+      this.$refs.offersDialog.hide()
+      this.clearCurrentOffer()
+    },
     redirectToProvider (providerUrl) {
       window.open(providerUrl, '_blank')
     },
@@ -280,6 +285,7 @@ export default {
     },
     showOffersModal (currentBook) {
       this.offersModal = true
+      this.isOffersLoadingSpinnerVisible = true
       this.findCurrentOffers(currentBook)
     }
   },

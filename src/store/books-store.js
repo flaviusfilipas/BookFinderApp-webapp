@@ -128,7 +128,6 @@ const state = {
   publishers: [],
   bookTypes: [],
   currentOffer: [],
-  isLoadingSpinnerVisible: { isHidden: true },
   offers: [
     {
       id: 1,
@@ -199,6 +198,9 @@ const actions = {
   clearFilters ({ commit }) {
     commit('clearFilters')
   },
+  clearCurrentOffer ({ commit }) {
+    commit('clearCurrentOffer')
+  },
   setBookTypesFilter ({ commit }, value) {
     commit('setBookTypesFilter', value)
   },
@@ -226,20 +228,22 @@ const actions = {
     carturestiReq.then(response => {
       commit('addBooks', response.data)
       this._vm.$q.loading.hide()
-      this.$router.push('results')
+      if (this.$router.currentRoute.path !== '/results') {
+        this.$router.push('results')
+      }
     }).catch(errors => {})
   },
   findCurrentOffers ({ commit }, currentBook) {
     console.log('current book isbn ' + currentBook.isbn)
     const SPLASH_URL = 'http://localhost:8050/render.html'
     const SCRAPYRT_URL = 'http://localhost:9080/crawl.json'
-    // const divertaUri = encodeURI(`${SPLASH_URL}?url=https://www.dol.ro/?sn.q=${currentBook.isbn}&forbidden_content_types=text/css,font/*&filters=easylist&images=0`)
+    const divertaUri = encodeURI(`${SPLASH_URL}?url=https://www.dol.ro/?sn.q=${currentBook.isbn}&forbidden_content_types=text/css,font/*&filters=easylist&images=0`)
     const librisUrl = `https://www.libris.ro/?sn.q=${currentBook.isbn}`
     const librisUri = encodeURI(`${SPLASH_URL}?url=${librisUrl}&forbidden_content_types=text/css,font/*&filters=easylist`)
     const librarieNetUri = encodeURI(`${SPLASH_URL}?url=https://www.librarie.net/cautare-rezultate.php?t=${currentBook.title}&forbidden_content_types=text/css,font/*&filters=easylist`)
     const emagUri = encodeURI(`${SPLASH_URL}?url=https://www.emag.ro/search/${currentBook.isbn}?ref=effective_search&forbidden_content_types=text/css,font/*`)
 
-    // const divertaReq = axios.get(`${SCRAPYRT_URL}?url=${divertaUri}&spider_name=diverta`)
+    const divertaReq = axios.get(`${SCRAPYRT_URL}?url=${divertaUri}&spider_name=diverta`)
     const librisReq = axios.get(`${SCRAPYRT_URL}?url=${librisUri}&spider_name=libris`)
     const librarieNetReq = axios.get(`${SCRAPYRT_URL}?url=${librarieNetUri}&spider_name=librarienet`)
     const emagReq = axios.get(`${SCRAPYRT_URL}?url=${emagUri}&spider_name=emag`)
@@ -247,13 +251,9 @@ const actions = {
     const elefantReq = axios.get(`${SCRAPYRT_URL}?url=${elefantUri}&spider_name=elefant`)
     const booksExpressUri = encodeURIComponent(`https://www.books-express.ro/search?q=${currentBook.isbn}`)
     const booksExpressReq = axios.get(`${SCRAPYRT_URL}?url=${booksExpressUri}&spider_name=booksExpress&callback=parse_book_info`)
-    // axios.all([divertaReq, librisReq, librarieNetReq, emagReq, elefantReq, booksExpressReq])
-    // TODO change when diverta is back
-    console.log('intru in axios')
-    // commit('setOffersLoadingSpinner', true)
-    axios.all([librisReq, librarieNetReq, emagReq, elefantReq, booksExpressReq])
+    axios.all([divertaReq, librisReq, librarieNetReq, emagReq, elefantReq, booksExpressReq])
       .then(axios.spread((...responses) => {
-        const divertaResponse = { items: [] }// responses[0].data
+        const divertaResponse = responses[0].data
         const librisResponse = responses[0].data
         const librarieNetResponse = responses[1].data
         const emagResponse = responses[2].data
@@ -261,7 +261,6 @@ const actions = {
         const booksExpressResponse = responses[4].data
         console.log(responses)
         commit('buildOffer', { divertaResponse, librisResponse, librarieNetResponse, emagResponse, elefantResponse, booksExpressResponse, currentBook })
-        // commit('setOffersLoadingSpinner', { value: false })
       })).catch(errors => {
       // react on errors.
       })
@@ -270,9 +269,8 @@ const actions = {
 }
 
 const mutations = {
-  setOffersLoadingSpinner (state, payload) {
-    // Vue.set(state.isLoadingSpinnerVisible, 'isHidden', payload.value)
-    state.isLoadingSpinnerVisible.isHidden = payload.value
+  clearCurrentOffer (state) {
+    state.currentOffer = []
   },
   buildOffer (state, payload) {
     console.log('offer')
@@ -461,9 +459,6 @@ const getters = {
   },
   getCurrentOffer: (state) => {
     return state.currentOffer
-  },
-  isLoadingSpinnerVisible: (state) => {
-    return state.isLoadingSpinnerVisible
   }
 }
 
