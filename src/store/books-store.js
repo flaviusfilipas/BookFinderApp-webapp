@@ -194,10 +194,10 @@ const state = {
 
 const actions = {
   addToWishlist ({ commit }, payload) {
-    const watchlistBook = new WatchlistBook(payload.book, payload.offer, payload.currentUserId)
+    const watchlistBook = new WatchlistBook(payload.book, payload.currentUserId)
     axios.post(`${endpoints.BACKEND_URL}${endpoints.POST_WATCHLIST_BOOK}`, watchlistBook)
       .then(response => {
-        commit('addToWishlist', payload.offer)
+        commit('addToWishlist', payload.book.offer)
       })
   },
   getWatchlistBooksForCurrentUser ({ commit }) {

@@ -264,7 +264,8 @@ export default {
       'filterBooks', 'clearFilters', 'setBookTypesFilter', 'findCurrentOffers', 'clearCurrentOffer']),
     addToWatchlist (offer) {
       const currentUserId = SessionStorage.getItem('userId')
-      this.addToWishlist({ offer: offer, book: this.currentBook, currentUserId: currentUserId })
+      this.currentBook.offer = offer
+      this.addToWishlist({ book: this.currentBook, currentUserId: currentUserId })
       if (this.loggedIn) {
         this.$q.notify({
           type: 'positive',
