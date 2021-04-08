@@ -188,6 +188,7 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
+import { SessionStorage } from 'quasar'
 export default {
   data () {
     return {
@@ -195,8 +196,8 @@ export default {
       current: 1,
       offersModal: false,
       filterModal: false,
-      isPressed: false,
-      isOffersLoadingSpinnerVisible: false
+      isOffersLoadingSpinnerVisible: false,
+      currentBook: {}
     }
   },
   computed: {
@@ -218,6 +219,7 @@ export default {
     },
     currentOffer () {
       const currentOffer = [...this.$store.getters['booksStore/getCurrentOffer']]
+      console.log(currentOffer)
       return currentOffer.sort((a, b) => { return (a.price + a.transportationCost) - (b.price + b.transportationCost) })
     },
     ...mapState('authStore', ['loggedIn']),
@@ -261,9 +263,9 @@ export default {
     ...mapActions('booksStore', ['addToWishlist', 'setAuthorsFilter', 'setPublishersFilter',
       'filterBooks', 'clearFilters', 'setBookTypesFilter', 'findCurrentOffers', 'clearCurrentOffer']),
     addToWatchlist (offer) {
-      this.addToWishlist(offer)
+      const currentUserId = SessionStorage.getItem('userId')
+      this.addToWishlist({ offer: offer, book: this.currentBook, currentUserId: currentUserId })
       if (this.loggedIn) {
-        this.isPressed = true
         this.$q.notify({
           type: 'positive',
           timeout: 100,
@@ -284,6 +286,7 @@ export default {
       this.clearFilters()
     },
     showOffersModal (currentBook) {
+      this.currentBook = currentBook
       this.offersModal = true
       this.isOffersLoadingSpinnerVisible = true
       this.findCurrentOffers(currentBook)

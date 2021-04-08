@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import axios from 'axios'
+import WatchlistBook from '../models/WatchlistBook'
+import endpoints from '../shared/endpoints'
 const state = {
   watchlistBooks: [
     {
@@ -181,7 +183,11 @@ const state = {
 
 const actions = {
   addToWishlist ({ commit }, payload) {
-    commit('addToWishlist', payload)
+    const watchlistBook = new WatchlistBook(payload.book, payload.offer, payload.currentUserId)
+    axios.post(`${endpoints.BACKEND_URL}${endpoints.POST_WATCHLIST_BOOK}`, watchlistBook)
+      .then(response => {
+        commit('addToWishlist', payload.offer)
+      })
   },
   setAuthorsFilter ({ commit }, value) {
     commit('setAuthorsFilter', value)
@@ -217,11 +223,9 @@ const actions = {
     commit('setOffersLoadingSpinner', payload)
   },
   searchBooks ({ commit }, searchWord) {
-    const SPLASH_URL = 'http://localhost:8050/render.html'
-    const SCRAPYRT_URL = 'http://localhost:9080/crawl.json'
     const carturestiUrl = encodeURIComponent(`https://www.carturesti.ro/product/search/${searchWord}?page=1&id_product_type=26`)
-    const carturestiUri = encodeURI(`${SPLASH_URL}?url=${carturestiUrl}&forbidden_content_types=text/css,font/*&filters=easylist`)
-    const carturestiReq = axios.get(`${SCRAPYRT_URL}?url=${carturestiUri}&spider_name=carturesti`)
+    const carturestiUri = encodeURI(`${endpoints.SPLASH_URL}?url=${carturestiUrl}&forbidden_content_types=text/css,font/*&filters=easylist`)
+    const carturestiReq = axios.get(`${endpoints.SCRAPYRT_URL}?url=${carturestiUri}&spider_name=carturesti`)
     this._vm.$q.loading.show({
       message: 'Searching books'
     })
@@ -235,30 +239,28 @@ const actions = {
   },
   findCurrentOffers ({ commit }, currentBook) {
     console.log('current book isbn ' + currentBook.isbn)
-    const SPLASH_URL = 'http://localhost:8050/render.html'
-    const SCRAPYRT_URL = 'http://localhost:9080/crawl.json'
-    const divertaUri = encodeURI(`${SPLASH_URL}?url=https://www.dol.ro/?sn.q=${currentBook.isbn}&forbidden_content_types=text/css,font/*&filters=easylist&images=0`)
+    const divertaUri = encodeURI(`${endpoints.SPLASH_URL}?url=https://www.dol.ro/?sn.q=${currentBook.isbn}&forbidden_content_types=text/css,font/*&filters=easylist&images=0`)
     const librisUrl = `https://www.libris.ro/?sn.q=${currentBook.isbn}`
-    const librisUri = encodeURI(`${SPLASH_URL}?url=${librisUrl}&forbidden_content_types=text/css,font/*&filters=easylist`)
-    const librarieNetUri = encodeURI(`${SPLASH_URL}?url=https://www.librarie.net/cautare-rezultate.php?t=${currentBook.title}&forbidden_content_types=text/css,font/*&filters=easylist`)
-    const emagUri = encodeURI(`${SPLASH_URL}?url=https://www.emag.ro/search/${currentBook.isbn}?ref=effective_search&forbidden_content_types=text/css,font/*`)
+    const librisUri = encodeURI(`${endpoints.SPLASH_URL}?url=${librisUrl}&forbidden_content_types=text/css,font/*&filters=easylist`)
+    const librarieNetUri = encodeURI(`${endpoints.SPLASH_URL}?url=https://www.librarie.net/cautare-rezultate.php?t=${currentBook.title}&forbidden_content_types=text/css,font/*&filters=easylist`)
+    const emagUri = encodeURI(`${endpoints.SPLASH_URL}?url=https://www.emag.ro/search/${currentBook.isbn}?ref=effective_search&forbidden_content_types=text/css,font/*`)
 
-    const divertaReq = axios.get(`${SCRAPYRT_URL}?url=${divertaUri}&spider_name=diverta`)
-    const librisReq = axios.get(`${SCRAPYRT_URL}?url=${librisUri}&spider_name=libris`)
-    const librarieNetReq = axios.get(`${SCRAPYRT_URL}?url=${librarieNetUri}&spider_name=librarienet`)
-    const emagReq = axios.get(`${SCRAPYRT_URL}?url=${emagUri}&spider_name=emag`)
+    const divertaReq = axios.get(`${endpoints.SCRAPYRT_URL}?url=${divertaUri}&spider_name=diverta`)
+    const librisReq = axios.get(`${endpoints.SCRAPYRT_URL}?url=${librisUri}&spider_name=libris`)
+    const librarieNetReq = axios.get(`${endpoints.SCRAPYRT_URL}?url=${librarieNetUri}&spider_name=librarienet`)
+    const emagReq = axios.get(`${endpoints.SCRAPYRT_URL}?url=${emagUri}&spider_name=emag`)
     const elefantUri = encodeURIComponent(`https://www.elefant.ro/search?SearchTerm=${currentBook.isbn}`)
-    const elefantReq = axios.get(`${SCRAPYRT_URL}?url=${elefantUri}&spider_name=elefant`)
+    const elefantReq = axios.get(`${endpoints.SCRAPYRT_URL}?url=${elefantUri}&spider_name=elefant`)
     const booksExpressUri = encodeURIComponent(`https://www.books-express.ro/search?q=${currentBook.isbn}`)
-    const booksExpressReq = axios.get(`${SCRAPYRT_URL}?url=${booksExpressUri}&spider_name=booksExpress&callback=parse_book_info`)
+    const booksExpressReq = axios.get(`${endpoints.SCRAPYRT_URL}?url=${booksExpressUri}&spider_name=booksExpress&callback=parse_book_info`)
     axios.all([divertaReq, librisReq, librarieNetReq, emagReq, elefantReq, booksExpressReq])
       .then(axios.spread((...responses) => {
         const divertaResponse = responses[0].data
-        const librisResponse = responses[0].data
-        const librarieNetResponse = responses[1].data
-        const emagResponse = responses[2].data
-        const elefantResponse = responses[3].data
-        const booksExpressResponse = responses[4].data
+        const librisResponse = responses[1].data
+        const librarieNetResponse = responses[2].data
+        const emagResponse = responses[3].data
+        const elefantResponse = responses[4].data
+        const booksExpressResponse = responses[5].data
         console.log(responses)
         commit('buildOffer', { divertaResponse, librisResponse, librarieNetResponse, emagResponse, elefantResponse, booksExpressResponse, currentBook })
       })).catch(errors => {
@@ -276,25 +278,23 @@ const mutations = {
     console.log('offer')
     console.log(payload)
     state.currentOffer = []
-    state.currentOffer.push(payload.currentBook.offer)
+    state.currentOffer.push({ ...payload.currentBook.offer, isAddedToWatchlist: false })
     // eslint-disable-next-line no-unused-vars
     for (const [key, value] of Object.entries(payload)) {
       if (value.items.length > 0) {
-        state.currentOffer.push(value.items[0].offer)
+        state.currentOffer.push({ ...value.items[0].offer, isAddedToWatchlist: false })
       }
     }
     const librarieNetBook = payload.librarieNetResponse.items.find(element => element.isbn === payload.currentBook.isbn)
 
-    state.currentOffer.push(librarieNetBook.offer)
+    state.currentOffer.push({ ...librarieNetBook.offer, isAddedToWatchlist: false })
   },
   addBooks (state, payload) {
     console.log(payload)
     const authors = []
     const publishers = []
     const coverTypes = []
-    const list = payload.items.map(element => {
-      const book = { ...element, offers: [], isAddedToWatchlist: false }
-      book.offers.push(element.offer)
+    const list = payload.items.map(book => {
       const author = book.author
       const publisher = book.publisher
       const coverType = book.coverType
@@ -317,11 +317,8 @@ const mutations = {
   },
 
   addToWishlist (state, payload) {
-    for (let i = 0; i < state.offers.length; i++) {
-      if (state.offers[i].id === payload.id) {
-        state.offers[i].isAddedToWatchlist = true
-      }
-    }
+    const offer = state.currentOffer.find(element => element.provider === payload.provider)
+    offer.isAddedToWatchlist = true
   },
   setAuthorsFilter (state, value) {
     const filters = []
