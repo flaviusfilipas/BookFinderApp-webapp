@@ -214,9 +214,6 @@ export default {
     bookTypes () {
       return this.$store.getters['booksStore/getBookTypes']
     },
-    offers () {
-      return this.$store.getters['booksStore/getOffers']
-    },
     currentOffer () {
       const currentOffer = [...this.$store.getters['booksStore/getCurrentOffer']]
       console.log(currentOffer)
