@@ -106,7 +106,7 @@
         <q-card-section class="q-pt-none">
           <q-option-group
             :options="alertOps"
-            type="radio"
+            type="checkbox"
             v-model="alertOpt"/>
         </q-card-section>
 
@@ -203,7 +203,7 @@ export default {
         }
       ],
       deleteAlertOpt: '',
-      alertOpt: '',
+      alertOpt: [],
       currentBook: {},
       deleteAlertsModal: false
     }
@@ -276,15 +276,23 @@ export default {
       return `Succesfully deleted ${this.deleteAlertOpt} ${noun}`
     },
     notifyAlert () {
-      switch (this.alertOpt) {
+      let alertOption = ''
+      if (this.alertOpt.length > 0) {
+        alertOption = 'all'
+      } else {
+        alertOption = this.alertOpt[0]
+      }
+      switch (alertOption) {
         case 'price':
           this.notifyPriceAlert()
           break
         case 'stock': this.notifyStockAlert()
           break
+        case 'all': this.notifyAlerts()
+          break
         default: alert('Invalid option')
       }
-      this.alertOpt = ''
+      this.alertOpt = []
     },
     notifyPriceAlert () {
       this.$q.notify({
@@ -298,6 +306,13 @@ export default {
         type: 'positive',
         timeout: 500,
         message: 'You will be notified when book will be back in stock'
+      })
+    },
+    notifyAlerts () {
+      this.$q.notify({
+        type: 'positive',
+        timeout: 500,
+        message: 'You will be notified when book will be back in stock and when price will go down'
       })
     },
     clearAllFilters () {

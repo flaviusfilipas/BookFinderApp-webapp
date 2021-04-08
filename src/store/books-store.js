@@ -218,8 +218,17 @@ const actions = {
   setBookTypesFilter ({ commit }, value) {
     commit('setBookTypesFilter', value)
   },
-  addAlert ({ commit }, payload) {
-    commit('addAlert', payload)
+  addAlert ({ commit, dispatch }, payload) {
+    let alertType = ''
+    if (payload.alertOpt.length > 1) {
+      alertType = 'all'
+    } else {
+      alertType = payload.alertOpt[0]
+    }
+    axios.post(`${endpoints.BACKEND_URL}${endpoints.USER_WATCHLIST_URI}/alerts/${payload.currentBook.id}?alertType=${alertType}`)
+      .then(response => {
+        dispatch('getWatchlistBooksForCurrentUser')
+      })
   },
   deleteBookFromWatchlist ({ commit }, bookId) {
     commit('deleteFromWatchlist', bookId)
@@ -280,7 +289,6 @@ const actions = {
 
 const mutations = {
   getWatchlistBooksForCurrentUser (state, payload) {
-    // Vue.set(state.watchlistBook, payload)
     state.watchlistBooks = payload
   },
   clearCurrentOffer (state) {
@@ -377,17 +385,6 @@ const mutations = {
     state.filters.publisher = []
     state.filters.coverType = []
     state.watchlistFilters = []
-  },
-  addAlert (state, payload) {
-    for (let i = 0; i < state.watchlistBooks.length; i++) {
-      if (state.watchlistBooks[i].id === payload.currentBook.id) {
-        if (payload.alertOpt === 'stock') {
-          state.watchlistBooks[i].hasStockAlert = true
-        } else {
-          state.watchlistBooks[i].hasPriceAlert = true
-        }
-      }
-    }
   },
   deleteFromWatchlist (state, bookId) {
     const watchlistBooks = state.watchlistBooks
