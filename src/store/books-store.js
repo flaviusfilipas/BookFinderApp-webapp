@@ -3,6 +3,16 @@ import axios from 'axios'
 import WatchlistBook from '../models/WatchlistBook'
 import endpoints from '../shared/endpoints'
 import { SessionStorage } from 'quasar'
+
+function getAlertType (alertOptions) {
+  if (alertOptions.length > 1) {
+    return 'all'
+  }
+  return alertOptions[0]
+}
+function buildDeleteAlertMessage (alertType) {
+  return `Succesfully deleted ${alertType} ${alertType !== 'all' ? 'alert' : 'alerts'}`
+}
 const state = {
   watchlistBooks: [
     {
@@ -218,13 +228,8 @@ const actions = {
   setBookTypesFilter ({ commit }, value) {
     commit('setBookTypesFilter', value)
   },
-  addAlert ({ commit, dispatch }, payload) {
-    let alertType = ''
-    if (payload.alertOpt.length > 1) {
-      alertType = 'all'
-    } else {
-      alertType = payload.alertOpt[0]
-    }
+  addAlert ({ dispatch }, payload) {
+    const alertType = getAlertType(payload.alertOpt)
     axios.post(`${endpoints.BACKEND_URL}${endpoints.USER_WATCHLIST_URI}/alerts/${payload.currentBook.id}?alertType=${alertType}`)
       .then(response => {
         dispatch('getWatchlistBooksForCurrentUser')
@@ -233,8 +238,17 @@ const actions = {
   deleteBookFromWatchlist ({ commit }, bookId) {
     commit('deleteFromWatchlist', bookId)
   },
-  deleteAlert ({ commit }, payload) {
-    commit('deleteAlert', payload)
+  deleteAlerts ({ dispatch }, payload) {
+    const alertType = getAlertType(payload.deleteAlertOpt)
+    axios.delete(`${endpoints.BACKEND_URL}${endpoints.USER_WATCHLIST_URI}/alerts/${payload.currentBook.id}?alertType=${alertType}`)
+      .then(response => {
+        dispatch('getWatchlistBooksForCurrentUser')
+        this._vm.$q.notify({
+          type: 'positive',
+          timeout: 650,
+          message: buildDeleteAlertMessage(alertType)
+        })
+      })
   },
   setOffersLoadingSpinner ({ commit }, payload) {
     commit('setOffersLoadingSpinner', payload)

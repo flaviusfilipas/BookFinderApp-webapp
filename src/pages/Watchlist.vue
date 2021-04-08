@@ -50,7 +50,7 @@
                           <q-item-label>Delete from watchlist</q-item-label>
                         </q-item-section>
                       </q-item>
-                      <q-item clickable v-close-popup @click="deleteAlerts(book)">
+                      <q-item clickable v-close-popup @click="showDeleteAlertsModal(book)">
                         <q-item-section>
                           <q-item-label>Delete alerts</q-item-label>
                         </q-item-section>
@@ -87,13 +87,13 @@
         <q-card-section class="q-pt-none">
           <q-option-group
             :options="deleteAlertOps"
-            type="radio"
+            type="checkbox"
             v-model="deleteAlertOpt"/>
         </q-card-section>
 
         <q-card-actions align="right" class="text-primary">
           <q-btn flat label="Cancel" v-close-popup />
-          <q-btn flat label="Confirm" @click = "deleteSomeAlert" v-close-popup />
+          <q-btn flat label="Confirm" @click = "deleteAlert" v-close-popup />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -196,13 +196,9 @@ export default {
         {
           label: 'Stock alert',
           value: 'stock'
-        },
-        {
-          label: 'All alerts',
-          value: 'all'
         }
       ],
-      deleteAlertOpt: '',
+      deleteAlertOpt: [],
       alertOpt: [],
       currentBook: {},
       deleteAlertsModal: false
@@ -213,7 +209,7 @@ export default {
       this.alertModal = true
       this.currentBook = currentBook
     },
-    ...mapActions('booksStore', ['setWatchlistFilters', 'clearFilters', 'addAlert', 'deleteBookFromWatchlist', 'deleteAlert', 'getWatchlistBooksForCurrentUser']),
+    ...mapActions('booksStore', ['setWatchlistFilters', 'clearFilters', 'addAlert', 'deleteBookFromWatchlist', 'deleteAlerts', 'getWatchlistBooksForCurrentUser']),
     addBookAlert () {
       const currentBook = this.currentBook
       const alertOpt = this.alertOpt
@@ -244,32 +240,15 @@ export default {
         })
       })
     },
-    deleteAlerts (book) {
-      if (this.hasAllAlerts(book)) {
-        this.deleteAlertsModal = true
-        this.currentBook = book
-      } else {
-        this.$q.dialog({
-          title: 'Confirm',
-          message: 'Do you really want to delete all the alerts for this book? ',
-          cancel: true,
-          persistent: true
-        }).onOk(() => {
-          this.deleteAlertOpt = 'all'
-          this.deleteSomeAlert()
-        })
-      }
-      this.deleteAlertOpt = ''
+    showDeleteAlertsModal (book) {
+      this.deleteAlertsModal = true
+      this.currentBook = book
     },
-    deleteSomeAlert () {
+    deleteAlert () {
       const currentBook = this.currentBook
       const deleteAlertOpt = this.deleteAlertOpt
-      this.deleteAlert({ currentBook, deleteAlertOpt })
-      this.$q.notify({
-        type: 'positive',
-        timeout: 650,
-        message: this.handleNotifyMessage()
-      })
+      this.deleteAlerts({ currentBook, deleteAlertOpt })
+      this.deleteAlertOpt = []
     },
     handleNotifyMessage () {
       const noun = this.deleteAlertOpt !== 'all' ? 'alert' : 'alerts'
@@ -277,7 +256,7 @@ export default {
     },
     notifyAlert () {
       let alertOption = ''
-      if (this.alertOpt.length > 0) {
+      if (this.alertOpt.length > 1) {
         alertOption = 'all'
       } else {
         alertOption = this.alertOpt[0]
