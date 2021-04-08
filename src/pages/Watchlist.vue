@@ -233,11 +233,6 @@ export default {
         persistent: true
       }).onOk(() => {
         this.deleteBookFromWatchlist(bookId)
-        this.$q.notify({
-          type: 'positive',
-          timeout: 500,
-          message: 'Succesfully deleted item from watchlist'
-        })
       })
     },
     showDeleteAlertsModal (book) {

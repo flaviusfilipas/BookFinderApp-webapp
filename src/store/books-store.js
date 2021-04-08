@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import axios from 'axios'
 import WatchlistBook from '../models/WatchlistBook'
 import endpoints from '../shared/endpoints'
@@ -235,8 +234,16 @@ const actions = {
         dispatch('getWatchlistBooksForCurrentUser')
       })
   },
-  deleteBookFromWatchlist ({ commit }, bookId) {
-    commit('deleteFromWatchlist', bookId)
+  deleteBookFromWatchlist ({ dispatch }, bookId) {
+    axios.delete(`${endpoints.BACKEND_URL}${endpoints.USER_WATCHLIST_URI}/${bookId}`)
+      .then(response => {
+        dispatch('getWatchlistBooksForCurrentUser')
+        this._vm.$q.notify({
+          type: 'positive',
+          timeout: 500,
+          message: 'Succesfully deleted item from watchlist'
+        })
+      })
   },
   deleteAlerts ({ dispatch }, payload) {
     const alertType = getAlertType(payload.deleteAlertOpt)
@@ -399,25 +406,6 @@ const mutations = {
     state.filters.publisher = []
     state.filters.coverType = []
     state.watchlistFilters = []
-  },
-  deleteFromWatchlist (state, bookId) {
-    const watchlistBooks = state.watchlistBooks
-    const index = watchlistBooks.indexOf(watchlistBooks.find(book => { return book.id === bookId }))
-    Vue.delete(state.watchlistBooks, index)
-  },
-  deleteAlert (state, payload) {
-    for (let i = 0; i < state.watchlistBooks.length; i++) {
-      if (state.watchlistBooks[i].id === payload.currentBook.id) {
-        if (payload.deleteAlertOpt === 'stock') {
-          state.watchlistBooks[i].hasStockAlert = false
-        } else if (payload.deleteAlertOpt === 'price') {
-          state.watchlistBooks[i].hasPriceAlert = false
-        } else {
-          state.watchlistBooks[i].hasPriceAlert = false
-          state.watchlistBooks[i].hasStockAlert = false
-        }
-      }
-    }
   }
 }
 
