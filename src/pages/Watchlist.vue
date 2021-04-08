@@ -36,7 +36,11 @@
               <q-img :src="book.bookDTO.imgUrl" style="height:100%; max-height:190px" height="190px">
             </q-img>
               <q-card-actions class="q-ml-xs" vertical style="border-radius:10px;padding:0px;">
-                <q-btn v-if="hasAlerts(book)" flat round color="yellow" icon="star" />
+                <q-btn v-if="hasAlerts(book)" flat round color="yellow" icon="star" >
+                  <q-tooltip v-if="hasAlerts(book)">
+                    {{getAlertTypesForBook(book)}}
+                  </q-tooltip>
+                 </q-btn>
                 <q-btn flat round color="warning" icon="add_alert" @click="showAlertsModal(book)" >
                   <q-tooltip>
                     Add alert
@@ -205,6 +209,10 @@ export default {
     }
   },
   methods: {
+    getAlertTypesForBook (book) {
+      const alertTypes = [book.hasStockAlert ? 'stock' : '', book.hasPriceAlert ? 'price' : ''].filter(alert => alert !== '')
+      return alertTypes.length > 1 ? 'This book has enabled stock and price alerts' : `This book has enabled ${alertTypes[0]} alert`
+    },
     showAlertsModal (currentBook) {
       this.alertModal = true
       this.currentBook = currentBook
