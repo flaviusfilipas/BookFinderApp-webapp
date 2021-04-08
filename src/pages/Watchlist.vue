@@ -33,8 +33,9 @@
               <!-- <div class="book-image-container">
                   <img class="book-image" :src="book.imgSource">
               </div> -->
-              <q-img :src="book.bookDTO.imgUrl" style="height:100%; max-height:190px" height="190px">
-            </q-img>
+              <q-img @click="goToProviderPage(book.bookDTO.offer.link)" class="cursor-pointer" :src="book.bookDTO.imgUrl" style="height:100%; max-height:190px" height="190px">
+                <q-tooltip>Go to provider</q-tooltip>
+              </q-img>
               <q-card-actions class="q-ml-xs" vertical style="border-radius:10px;padding:0px;">
                 <q-btn v-if="hasAlerts(book)" flat round color="yellow" icon="star" >
                   <q-tooltip v-if="hasAlerts(book)">
@@ -216,6 +217,9 @@ export default {
     showAlertsModal (currentBook) {
       this.alertModal = true
       this.currentBook = currentBook
+    },
+    goToProviderPage (link) {
+      window.open(link, '_blank')
     },
     ...mapActions('booksStore', ['setWatchlistFilters', 'clearFilters', 'addAlert', 'deleteBookFromWatchlist', 'deleteAlerts', 'getWatchlistBooksForCurrentUser']),
     addBookAlert () {
