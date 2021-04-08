@@ -1,6 +1,8 @@
 /* eslint-disable no-empty-pattern */
+import axios from 'axios'
 import { firebaseAuth } from 'boot/firebase'
 import { SessionStorage } from 'quasar'
+import endpoints from '../shared/endpoints'
 
 const state = {
   loggedIn: false
@@ -16,6 +18,7 @@ const actions = {
   registerUser ({}, payload) {
     firebaseAuth.createUserWithEmailAndPassword(payload.email, payload.password)
       .then(response => {
+        axios.post(`${endpoints.BACKEND_URL}${endpoints.POST_USER}`, { id: response.user.uid, email: response.user.email })
         console.log('response ', response)
       })
       .catch(error => {
@@ -33,13 +36,17 @@ const actions = {
   handleAuthStateChange ({ commit }) {
     firebaseAuth.onAuthStateChanged(user => {
       if (user) {
+        console.log(user)
         commit('setLoggedIn', true)
         SessionStorage.set('loggedIn', true)
         SessionStorage.set('userName', user.email)
+        SessionStorage.set('userId', user.uid)
       } else {
+        console.log(user)
         commit('setLoggedIn', false)
         SessionStorage.set('loggedIn', false)
         SessionStorage.set('userName', '')
+        SessionStorage.set('userId', '')
       }
     })
   },
