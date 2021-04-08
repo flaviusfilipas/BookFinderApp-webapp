@@ -97,7 +97,9 @@
                 </div>
               </td>
               <td class="text-right">{{offer.price !== null ? offer.price.toFixed(2) : 'Indisponibil'}}</td>
-              <td class="text-center">{{offer.transportationCost.toFixed(2)}}</td>
+              <td class="text-center">{{offer.transportationCost.toFixed(2)}}
+                <q-tooltip>Price may vary depending on your location</q-tooltip>
+              </td>
               <td class="text-right">{{offer.price !== null ? (offer.price + offer.transportationCost).toFixed(2) : 'Indisponibil'}}</td>
               <td class="text-center">
                   <q-btn round flat icon="shopping_cart" @click="redirectToProvider(offer.link)" >
