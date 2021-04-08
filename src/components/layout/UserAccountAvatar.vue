@@ -26,7 +26,14 @@ export default {
   methods: {
     ...mapActions('authStore', ['logoutUser']),
     logOut () {
-      this.logoutUser()
+      this.$q.dialog({
+        title: 'Confirm',
+        message: 'Are you sure you want to log out?',
+        cancel: true,
+        persistent: true
+      }).onOk(() => {
+        this.logoutUser()
+      })
     }
   },
   computed: {
