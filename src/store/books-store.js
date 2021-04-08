@@ -2,6 +2,7 @@ import Vue from 'vue'
 import axios from 'axios'
 import WatchlistBook from '../models/WatchlistBook'
 import endpoints from '../shared/endpoints'
+import { SessionStorage } from 'quasar'
 const state = {
   watchlistBooks: [
     {
@@ -189,6 +190,13 @@ const actions = {
         commit('addToWishlist', payload.offer)
       })
   },
+  getWatchlistBooksForCurrentUser ({ commit }) {
+    const currentUserId = SessionStorage.getItem('userId')
+    axios.get(`${endpoints.BACKEND_URL}${endpoints.BOOKS_URI}/watchlist/user/${currentUserId}`)
+      .then(response => {
+        commit('getWatchlistBooksForCurrentUser', response.data)
+      })
+  },
   setAuthorsFilter ({ commit }, value) {
     commit('setAuthorsFilter', value)
   },
@@ -271,6 +279,10 @@ const actions = {
 }
 
 const mutations = {
+  getWatchlistBooksForCurrentUser (state, payload) {
+    // Vue.set(state.watchlistBook, payload)
+    state.watchlistBooks = payload
+  },
   clearCurrentOffer (state) {
     state.currentOffer = []
   },

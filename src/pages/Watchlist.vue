@@ -33,7 +33,7 @@
               <!-- <div class="book-image-container">
                   <img class="book-image" :src="book.imgSource">
               </div> -->
-              <q-img :src="book.imgSource" style="height:100%; max-height:190px" height="190px">
+              <q-img :src="book.bookDTO.imgUrl" style="height:100%; max-height:190px" height="190px">
             </q-img>
               <q-card-actions class="q-ml-xs" vertical style="border-radius:10px;padding:0px;">
                 <q-btn v-if="hasAlerts(book)" flat round color="yellow" icon="star" />
@@ -62,16 +62,17 @@
             </q-card-section>
             <q-card-section class="q-pa-xs book-info-section">
               <span class="watch-book-info-area">
-                <div class="watch-book-info-area text-subtitle2">{{book.title}}</div>
-                <q-tooltip>{{book.title}}</q-tooltip>
+                <div class="watch-book-info-area text-subtitle2">{{book.bookDTO.title}}</div>
+                <q-tooltip>{{book.bookDTO.title}}</q-tooltip>
               </span>
-              <div class="watch-book-info-area text-caption">By: {{book.author}}</div>
-              <div class="watch-book-info-area text-caption text-bold">ISBN: {{book.isbn}}</div>
-              <div class="watch-book-info-area text-caption text-italic">{{book.type}}, {{book.pages}} pages, publisher {{book.publisher}}</div>
-              <div v-if="book.hasStock" class="watch-book-info-area text-caption text-italic text-positive">In stock</div>
+              <div class="watch-book-info-area text-caption">By: {{book.bookDTO.author}}</div>
+              <div class="watch-book-info-area text-caption text-bold">ISBN: {{book.bookDTO.isbn}}</div>
+              <div class="watch-book-info-area text-caption text-italic">{{book.bookDTO.coverType}}, {{book.bookDTO.numberOfPages}} pages, publisher {{book.bookDTO.publisher}}</div>
+              <div v-if="book.bookDTO.offer.hasStock" class="watch-book-info-area text-caption text-italic text-positive">In stock</div>
               <div v-else class="watch-book-info-area text-caption text-italic text-negative">Not in stock</div>
-              <div class="watch-book-info-area text-caption text-italic">Sold by <b>{{book.provider}}</b></div>
-              <div class="watch-book-info-area text-subtitle1 text-bold">Price: {{book.price}} lei</div>
+              <div class="watch-book-info-area text-caption text-italic">Sold by <b>{{book.bookDTO.offer.provider}}</b></div>
+              <div class="watch-book-info-area text-subtitle1 text-bold">Original Price: {{book.originalPrice}} lei</div>
+              <div class="watch-book-info-area text-subtitle1 text-bold">Last Price: {{book.lastPrice}} lei</div>
             </q-card-section>
           </q-card>
         </div>
@@ -212,7 +213,7 @@ export default {
       this.alertModal = true
       this.currentBook = currentBook
     },
-    ...mapActions('booksStore', ['setWatchlistFilters', 'clearFilters', 'addAlert', 'deleteBookFromWatchlist', 'deleteAlert']),
+    ...mapActions('booksStore', ['setWatchlistFilters', 'clearFilters', 'addAlert', 'deleteBookFromWatchlist', 'deleteAlert', 'getWatchlistBooksForCurrentUser']),
     addBookAlert () {
       const currentBook = this.currentBook
       const alertOpt = this.alertOpt
@@ -317,6 +318,9 @@ export default {
         console.log(value)
       }
     }
+  },
+  beforeMount () {
+    this.getWatchlistBooksForCurrentUser()
   }
 }
 </script>
