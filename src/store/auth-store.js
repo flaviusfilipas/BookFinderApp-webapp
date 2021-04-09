@@ -1,7 +1,7 @@
 /* eslint-disable no-empty-pattern */
 import axios from 'axios'
 import { firebaseAuth } from 'boot/firebase'
-import { SessionStorage } from 'quasar'
+import { SessionStorage, Loading, Dialog } from 'quasar'
 import endpoints from '../shared/endpoints'
 
 const state = {
@@ -16,32 +16,36 @@ const mutations = {
 
 const actions = {
   registerUser ({}, payload) {
-    const notification = this._vm.$q.notify({
-      type: 'ongoing',
-      message: 'Account is being created'
-    })
+    Loading.show()
     firebaseAuth.createUserWithEmailAndPassword(payload.email, payload.password)
       .then(response => {
         axios.post(`${endpoints.BACKEND_URL}${endpoints.POST_USER}`, { id: response.user.uid, email: response.user.email })
-        setTimeout(() => {
-          notification({
-            type: 'positive',
-            message: 'Succesfully created account',
-            timeout: 250
-          })
-          window.history.length > 1 ? this.$router.go(-2) : this.$router.push('/search')
-        }, 1000)
+        Loading.hide()
+        window.history.length > 1 ? this.$router.go(-2) : this.$router.push('/search')
         console.log('response ', response)
       })
       .catch(error => {
+        Loading.hide()
+        Dialog.create({
+          title: 'Error',
+          message: error.message
+        })
         console.log('error ', error)
       })
   },
   loginUser ({}, payload) {
+    Loading.show()
     firebaseAuth.signInWithEmailAndPassword(payload.email, payload.password)
       .then(response => {
+        Loading.hide()
+        window.history.length > 1 ? this.$router.go(-1) : this.$router.push('/search')
         console.log('login response', response)
       }).catch(error => {
+        Loading.hide()
+        Dialog.create({
+          title: 'Error',
+          message: error.message
+        })
         console.log('login error', error)
       })
   },
