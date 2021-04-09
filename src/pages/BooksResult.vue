@@ -109,7 +109,7 @@
                   </q-btn>
               </td>
               <td>
-                  <q-btn :class= "[offer.isAddedToWatchlist ? 'text-warning' : 'text-dark']" round flat icon="visibility" @click="addToWatchlist(offer)">
+                  <q-btn :class= "[offer.isAddedToWatchlist ? 'text-warning disabled' : 'text-dark']" round flat icon="visibility" @click="addToWatchlist(offer)">
                     <q-tooltip>
                       Add to watchlist
                     </q-tooltip>
