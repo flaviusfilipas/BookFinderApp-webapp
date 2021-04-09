@@ -183,26 +183,6 @@ export default {
           value: 'stock'
         }
       ],
-      alertOps: [
-        {
-          label: 'Price alert',
-          value: 'price'
-        },
-        {
-          label: 'Stock alert',
-          value: 'stock'
-        }
-      ],
-      deleteAlertOps: [
-        {
-          label: 'Price alert',
-          value: 'price'
-        },
-        {
-          label: 'Stock alert',
-          value: 'stock'
-        }
-      ],
       deleteAlertOpt: [],
       alertOpt: [],
       currentBook: {},
@@ -318,6 +298,34 @@ export default {
         this.setWatchlistFilters(value)
         console.log(value)
       }
+    },
+    alertOps () {
+      return [
+        {
+          label: 'Price alert',
+          value: 'price',
+          disable: this.currentBook.hasPriceAlert
+        },
+        {
+          label: 'Stock alert',
+          value: 'stock',
+          disable: this.currentBook.hasStockAlert
+        }
+      ]
+    },
+    deleteAlertOps () {
+      return [
+        {
+          label: 'Price alert',
+          value: 'price',
+          disable: !this.currentBook.hasPriceAlert
+        },
+        {
+          label: 'Stock alert',
+          value: 'stock',
+          disable: !this.currentBook.hasStockAlert
+        }
+      ]
     }
   },
   beforeMount () {
