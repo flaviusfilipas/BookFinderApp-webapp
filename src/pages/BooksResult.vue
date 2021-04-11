@@ -228,7 +228,7 @@ export default {
         return this.filters.author
       },
       set (value) {
-        this.setAuthorsFilter(value)
+        this.setFilter({ value: value, filterType: 'author' })
         console.log(value)
       }
     },
@@ -238,7 +238,7 @@ export default {
       },
       set (value) {
         console.log(value)
-        this.setPublishersFilter(value)
+        this.setFilter({ value: value, filterType: 'publisher' })
       }
     },
     optTypes: {
@@ -247,7 +247,7 @@ export default {
       },
       set (value) {
         console.log(value)
-        this.setBookTypesFilter(value)
+        this.setFilter({ value: value, filterType: 'coverType' })
       }
     }
   },
@@ -259,8 +259,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions('booksStore', ['addToWishlist', 'setAuthorsFilter', 'setPublishersFilter',
-      'filterBooks', 'clearFilters', 'setBookTypesFilter', 'findCurrentOffers', 'clearCurrentOffer']),
+    ...mapActions('booksStore', ['addToWishlist', 'setFilter', 'filterBooks', 'clearFilters',
+      'findCurrentOffers', 'clearCurrentOffer']),
     addToWatchlist (offer) {
       const currentUserId = SessionStorage.getItem('userId')
       this.currentBook.offer = offer

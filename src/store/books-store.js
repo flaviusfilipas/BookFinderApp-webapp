@@ -37,11 +37,8 @@ const actions = {
         commit('getWatchlistBooksForCurrentUser', response.data)
       })
   },
-  setAuthorsFilter ({ commit }, value) {
-    commit('setAuthorsFilter', value)
-  },
-  setPublishersFilter ({ commit }, value) {
-    commit('setPublishersFilter', value)
+  setFilter ({ commit }, payload) {
+    commit('setFilters', payload)
   },
   setWatchlistFilters ({ commit }, value) {
     commit('setWatchlistFilters', value)
@@ -54,9 +51,6 @@ const actions = {
   },
   clearCurrentOffer ({ commit }) {
     commit('clearCurrentOffer')
-  },
-  setBookTypesFilter ({ commit }, value) {
-    commit('setBookTypesFilter', value)
   },
   addAlert ({ dispatch }, payload) {
     const alertType = functions.getAlertType(payload.alertOpt)
@@ -191,38 +185,24 @@ const mutations = {
     const offer = state.currentOffer.find(element => element.provider === payload.provider)
     offer.isAddedToWatchlist = true
   },
-  setAuthorsFilter (state, value) {
+  setFilters (state, payload) {
     const filters = []
-    for (let i = 0; i < value.length; i++) {
-      if (typeof (value[i]) === 'object') {
-        filters.push(value[i].label)
+    for (let i = 0; i < payload.value.length; i++) {
+      if (typeof (payload.value[i]) === 'object') {
+        filters.push(payload.value[i].label)
       } else {
-        filters.push(value[i])
+        filters.push(payload.value[i])
       }
     }
-    state.filters.author = filters
-  },
-  setPublishersFilter (state, value) {
-    const filters = []
-    for (let i = 0; i < value.length; i++) {
-      if (typeof (value[i]) === 'object') {
-        filters.push(value[i].label)
-      } else {
-        filters.push(value[i])
-      }
+    switch (payload.filterType) {
+      case 'author': state.filters.author = filters
+        break
+      case 'publisher': state.filters.publisher = filters
+        break
+      case 'coverType': state.filters.coverType = filters
+        break
+      default: alert('Invalid filterType')
     }
-    state.filters.publisher = filters
-  },
-  setBookTypesFilter (state, value) {
-    const filters = []
-    for (let i = 0; i < value.length; i++) {
-      if (typeof (value[i]) === 'object') {
-        filters.push(value[i].label)
-      } else {
-        filters.push(value[i])
-      }
-    }
-    state.filters.coverType = filters
   },
   setWatchlistFilters (state, value) {
     const filters = []
