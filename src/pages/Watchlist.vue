@@ -167,6 +167,8 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import functions from '../shared/functions'
+
 export default {
   data () {
     return {
@@ -242,12 +244,7 @@ export default {
       return `Succesfully deleted ${this.deleteAlertOpt} ${noun}`
     },
     notifyAlert () {
-      let alertOption = ''
-      if (this.alertOpt.length > 1) {
-        alertOption = 'all'
-      } else {
-        alertOption = this.alertOpt[0]
-      }
+      const alertOption = functions.getAlertType(this.alertOpt)
       switch (alertOption) {
         case 'price':
           this.notifyPriceAlert()

@@ -1,14 +1,9 @@
 import axios from 'axios'
 import WatchlistBook from '../models/WatchlistBook'
 import endpoints from '../shared/endpoints'
+import functions from '../shared/functions'
 import { SessionStorage } from 'quasar'
 
-function getAlertType (alertOptions) {
-  if (alertOptions.length > 1) {
-    return 'all'
-  }
-  return alertOptions[0]
-}
 function buildDeleteAlertMessage (alertType) {
   return `Succesfully deleted ${alertType} ${alertType !== 'all' ? 'alert' : 'alerts'}`
 }
@@ -64,7 +59,7 @@ const actions = {
     commit('setBookTypesFilter', value)
   },
   addAlert ({ dispatch }, payload) {
-    const alertType = getAlertType(payload.alertOpt)
+    const alertType = functions.getAlertType(payload.alertOpt)
     axios.post(`${endpoints.BACKEND_URL}${endpoints.USER_WATCHLIST_URI}/alerts/${payload.currentBook.id}?alertType=${alertType}`)
       .then(response => {
         dispatch('getWatchlistBooksForCurrentUser')
@@ -82,7 +77,7 @@ const actions = {
       })
   },
   deleteAlerts ({ dispatch }, payload) {
-    const alertType = getAlertType(payload.deleteAlertOpt)
+    const alertType = functions.getAlertType(payload.deleteAlertOpt)
     axios.delete(`${endpoints.BACKEND_URL}${endpoints.USER_WATCHLIST_URI}/alerts/${payload.currentBook.id}?alertType=${alertType}`)
       .then(response => {
         dispatch('getWatchlistBooksForCurrentUser')
@@ -98,7 +93,7 @@ const actions = {
   },
   searchBooks ({ commit }, searchWord) {
     const carturestiUrl = encodeURIComponent(`https://www.carturesti.ro/product/search/${searchWord}?page=1&id_product_type=26`)
-    const carturestiUri = encodeURI(`${endpoints.SPLASH_URL}?url=${carturestiUrl}&forbidden_content_types=text/css,font/*&filters=easylist`)
+    const carturestiUri = encodeURI(`${endpoints.SPLASH_URL}?url=${carturestiUrl}&wait=1&forbidden_content_types=text/css,font/*&filters=easylist`)
     const carturestiReq = axios.get(`${endpoints.SCRAPYRT_URL}?url=${carturestiUri}&spider_name=carturesti`)
     this._vm.$q.loading.show({
       message: 'Searching books'
