@@ -102,7 +102,7 @@ const actions = {
   },
   findCurrentOffers ({ commit }, currentBook) {
     console.log('current book isbn ' + currentBook.isbn)
-    const divertaUri = encodeURI(`${endpoints.SPLASH_URL}?url=https://www.dol.ro/?sn.q=${currentBook.isbn}&forbidden_content_types=text/css,font/*&filters=easylist&images=0`)
+    const divertaUri = encodeURI(`${endpoints.SPLASH_URL}?url=https://www.dol.ro/?sn.q=${currentBook.isbn}&wait=1&forbidden_content_types=text/css,font/*&filters=easylist&images=0`)
     const librisUrl = `https://www.libris.ro/?sn.q=${currentBook.isbn}`
     const librisUri = encodeURI(`${endpoints.SPLASH_URL}?url=${librisUrl}&forbidden_content_types=text/css,font/*&filters=easylist`)
     const librarieNetUri = encodeURI(`${endpoints.SPLASH_URL}?url=https://www.librarie.net/cautare-rezultate.php?t=${currentBook.title}&forbidden_content_types=text/css,font/*&filters=easylist`)
@@ -110,7 +110,7 @@ const actions = {
 
     const divertaReq = axios.get(`${endpoints.SCRAPYRT_URL}?url=${divertaUri}&spider_name=diverta`)
     const librisReq = axios.get(`${endpoints.SCRAPYRT_URL}?url=${librisUri}&spider_name=libris`)
-    const librarieNetReq = axios.get(`${endpoints.SCRAPYRT_URL}?url=${librarieNetUri}&spider_name=librarienet`)
+    const librarieNetReq = axios.get(`${endpoints.SCRAPYRT_URL}?url=${librarieNetUri}&spider_name=librarienet&crawl_args=${encodeURIComponent(`{"isbn":"${currentBook.isbn}"}`)}`)
     const emagReq = axios.get(`${endpoints.SCRAPYRT_URL}?url=${emagUri}&spider_name=emag`)
     const elefantUri = encodeURIComponent(`https://www.elefant.ro/search?SearchTerm=${currentBook.isbn}`)
     const elefantReq = axios.get(`${endpoints.SCRAPYRT_URL}?url=${elefantUri}&spider_name=elefant`)
@@ -150,9 +150,9 @@ const mutations = {
         state.currentOffer.push({ ...value.items[0].offer, isAddedToWatchlist: false })
       }
     }
-    const librarieNetBook = payload.librarieNetResponse.items.find(element => element.isbn === payload.currentBook.isbn)
+    // const librarieNetBook = payload.librarieNetResponse.items.find(element => element.isbn === payload.currentBook.isbn)
 
-    state.currentOffer.push({ ...librarieNetBook.offer, isAddedToWatchlist: false })
+    // state.currentOffer.push({ ...librarieNetBook.offer, isAddedToWatchlist: false })
   },
   addBooks (state, payload) {
     console.log(payload)

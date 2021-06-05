@@ -20,9 +20,9 @@
             </q-list>
           </div>
           <hr>
-        <div style="margin:0 0 auto auto;">
+        <!-- <div style="margin:0 0 auto auto;">
            <q-btn class="suggestions-button" color="primary" text-color="white" label="Get suggestions"/>
-        </div>
+        </div> -->
        </div>
     </div>
     <div class="col-sm-9 col-xs-12">
@@ -155,11 +155,11 @@
               <q-tooltip>Filter results</q-tooltip>
            </q-btn>
         </div>
-        <div class="sort-div q-ma-xs">
+        <!-- <div class="sort-div q-ma-xs">
           <q-btn flat round icon="assistant">
             <q-tooltip>Get suggestions</q-tooltip>
           </q-btn>
-        </div>
+        </div> -->
       </div>
     </q-page-sticky>
     </q-page>

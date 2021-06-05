@@ -18,7 +18,7 @@
       </q-input>
     </div>
     <div class="row justify-end">
-      <span @click="forgotPassword" style="cursor: pointer;" class="q-mb-lg justify-end">
+      <span @click="forgotPassword" class="q-mb-lg justify-end cursor-pointer">
         {{authType === 'login' ? 'Forgot password?' : ''}}
       </span>
     </div>
@@ -65,10 +65,8 @@ export default {
     authenticate () {
       if (this.authType === 'login') {
         this.loginUser(this.user)
-        window.history.length > 1 ? this.$router.go(-1) : this.$router.push('/search')
       } else {
         this.registerUser(this.user)
-        window.history.length > 1 ? this.$router.go(-1) : this.$router.push('/search')
       }
     },
     redirect () {

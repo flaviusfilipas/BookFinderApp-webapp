@@ -96,7 +96,7 @@
                     <q-tooltip>Item is not in stock</q-tooltip>
                 </div>
               </td>
-              <td class="text-right">{{offer.price !== null ? offer.price.toFixed(2) : 'Indisponibil'}}</td>
+              <td class="text-right">{{offer.price !== null ? offer.price.toFixed(2) : 'Not available'}}</td>
               <td class="text-center">{{offer.transportationCost.toFixed(2)}}
                 <q-tooltip>Price may vary depending on your location</q-tooltip>
               </td>
@@ -120,7 +120,7 @@
         </q-markup-table>
       </q-card-section>
       <q-inner-loading :showing="isOffersLoadingSpinnerVisible">
-        <div>Searching best offers from</div>
+        <div>Searching best offers</div>
         <q-spinner-gears size="50px" color="bg-blue-9" />
       </q-inner-loading>
     </q-card>
