@@ -34,97 +34,11 @@
     <div class="col-sm-9 col-xs-12">
       <div class="flex">
           <div class="row">
-            <q-card class="my-card q-ma-sm" v-for="book in booksResults" :key="book.isbn">
-              <div class="book-image-container">
-                  <img class="book-image q-ma-md" :src="book.imgUrl">
-               </div>
-              <q-card-section class="q-pa-xs" >
-                  <div class="book-info-area text-subtitle2 text-center" v-text="book.title">
-                  </div>
-                      <q-tooltip>{{book.title}}</q-tooltip>
-                  <div class="book-info-area text-caption text-center" >By: {{book.author}}</div>
-              </q-card-section>
-              <q-card-section class="q-pa-xs"   >
-                <div :class="[book.isbn !== null ? 'book-info-area text-bold text-center' : 'book-info-area text-bold text-center invisible']">ISBN: {{book.isbn}}</div>
-                <div class="book-info-area text-italic text-center">{{ book | processBookInformation }}</div>
-              </q-card-section>
-              <q-card-actions class="q-pa-xs">
-                <q-btn flat @click="showOffersModal(book)"> Offers</q-btn>
-              </q-card-actions>
-          </q-card>
+            <book v-for="book in booksResults" :key="book.isbn" :book="book"/>
         </div>
       </div>
     </div>
-    <q-dialog ref='offersDialog' v-model="offersModal" full-width persistent>
-    <q-card>
-     <q-card-section class="row items-center q-pb-none">
-          <div class="text-h6">Offers</div>
-          <q-space />
-          <q-btn @click='clearOfferState' icon="close" flat round dense/>
-        </q-card-section>
-
-      <q-card-section class="q-pt-none">
-        <q-markup-table class="q-ma-sm" flat bordered>
-          <thead v-if="currentOffer.length > 0" class="bg-another">
-            <tr>
-              <th class="text-left">Provider</th>
-              <th class="text-right">Stock</th>
-              <th class="text-right">Cost</th>
-              <th class="text-center">
-                <div>
-                  Transportation
-                </div>
-                <div>
-                  cost
-                </div>
-              </th>
-              <th class="text-right">Total</th>
-              <th class="text-right"></th>
-              <th class="text-right"></th>
-            </tr>
-          </thead>
-          <tbody class="bg-grey-3">
-            <tr v-for="offer in currentOffer" :key="offer.id">
-              <td class="text-left">{{offer.provider}}</td>
-              <td class="text-right" style="font-size:1.5em">
-                <div v-if="offer.hasStock" >
-                  <q-icon class="text-positive" name="check"/>
-                    <q-tooltip>Item is is stock</q-tooltip>
-                </div>
-                <div v-else>
-                  <q-icon class="text-negative" name="close" />
-                    <q-tooltip>Item is not in stock</q-tooltip>
-                </div>
-              </td>
-              <td class="text-right">{{offer.price !== null ? offer.price.toFixed(2) : 'Not available'}}</td>
-              <td class="text-center">{{offer.transportationCost.toFixed(2)}}
-                <q-tooltip>Price may vary depending on your location</q-tooltip>
-              </td>
-              <td class="text-right">{{offer.price !== null ? (offer.price + offer.transportationCost).toFixed(2) : 'Indisponibil'}}</td>
-              <td class="text-center">
-                  <q-btn round flat icon="shopping_cart" @click="redirectToProvider(offer.link)" >
-                    <q-tooltip>
-                        Go to provider's page
-                    </q-tooltip>
-                  </q-btn>
-              </td>
-              <td>
-                  <q-btn :class= "[offer.isAddedToWatchlist ? 'text-warning disabled' : 'text-dark']" round flat icon="visibility" @click="addToWatchlist(offer)">
-                    <q-tooltip>
-                      Add to watchlist
-                    </q-tooltip>
-                  </q-btn>
-              </td>
-            </tr>
-          </tbody>
-        </q-markup-table>
-      </q-card-section>
-      <q-inner-loading :showing="isOffersLoadingSpinnerVisible">
-        <div>Searching best offers</div>
-        <q-spinner-gears size="50px" color="bg-blue-9" />
-      </q-inner-loading>
-    </q-card>
-  </q-dialog>
+    <offer-modal></offer-modal>
   <q-drawer
     side="right"
     behavior="mobile"
@@ -189,16 +103,16 @@
 </template>
 
 <script>
+import Book from '../components/Book.vue'
+import OfferModal from '../components/offer/OfferModal.vue'
 import { mapActions, mapState } from 'vuex'
-import { SessionStorage } from 'quasar'
 export default {
+  components: { Book, OfferModal },
   data () {
     return {
       text: '',
       current: 1,
-      offersModal: false,
       filterModal: false,
-      isOffersLoadingSpinnerVisible: false,
       currentBook: {}
     }
   },
@@ -216,12 +130,6 @@ export default {
     bookTypes () {
       return this.$store.getters['booksStore/getBookTypes']
     },
-    currentOffer () {
-      const currentOffer = [...this.$store.getters['booksStore/getCurrentOffer']]
-      console.log(currentOffer)
-      return currentOffer.sort((a, b) => { return (a.price + a.transportationCost) - (b.price + b.transportationCost) })
-    },
-    ...mapState('authStore', ['loggedIn']),
     ...mapState('booksStore', ['filters']),
     optAuthors: {
       get () {
@@ -251,80 +159,16 @@ export default {
       }
     }
   },
-  watch: {
-    currentOffer (newValue) {
-      this.isOffersLoadingSpinnerVisible = false
-      console.log('Changed currentOffer ')
-      console.log(newValue)
-    }
-  },
   methods: {
-    ...mapActions('booksStore', ['addToWishlist', 'setFilter', 'filterBooks', 'clearFilters',
-      'findCurrentOffers', 'clearCurrentOffer']),
-    addToWatchlist (offer) {
-      const currentUserId = SessionStorage.getItem('userId')
-      this.currentBook.offer = offer
-      this.addToWishlist({ book: this.currentBook, currentUserId: currentUserId })
-      if (this.loggedIn) {
-        this.$q.notify({
-          type: 'positive',
-          timeout: 100,
-          message: 'Book added to watchlist'
-        })
-      } else {
-        this.$router.push('/login')
-      }
-    },
-    clearOfferState () {
-      this.$refs.offersDialog.hide()
-      this.clearCurrentOffer()
-    },
-    redirectToProvider (providerUrl) {
-      window.open(providerUrl, '_blank')
-    },
+    ...mapActions('booksStore', ['setFilter', 'filterBooks', 'clearFilters']),
     clearAllFilters () {
       this.clearFilters()
-    },
-    showOffersModal (currentBook) {
-      this.currentBook = currentBook
-      this.offersModal = true
-      this.isOffersLoadingSpinnerVisible = true
-      this.findCurrentOffers(currentBook)
-    }
-  },
-  filters: {
-    processBookInformation (book) {
-      const bookInfo = [book.coverType, `${book.numberOfPages} pages`, `publisher ${book.publisher}`]
-      if (bookInfo !== null && bookInfo !== undefined) {
-        return bookInfo.filter(info => (info !== null && info !== undefined) && (!info.includes('null') && !info.includes('undefined'))).join(', ')
-      }
-      return 'Information currently unavailable '
     }
   }
 }
 </script>
 
 <style lang="scss">
-  .book-image-container{
-    height: 270px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  .book-image{
-   display:block;
-   max-width:100%;
-   max-height:100%
-  }
-  .book-info-area{
-    height:44px;
-    text-overflow:ellipsis;
-    overflow:hidden;
-  }
-  .my-card{
-  width: 100%;
-  max-width: 200px;
-  }
   .filters{
     background-color: #f8f1f1;
     border-radius: 25px;
@@ -342,10 +186,6 @@ export default {
   @media(max-width: 695px){
     .web-filter-div{
       display: none;
-    }
-    .my-card{
-    width: 100%;
-    max-width: 150px;
     }
     .filters{
       display: none;

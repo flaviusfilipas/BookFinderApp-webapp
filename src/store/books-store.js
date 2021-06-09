@@ -19,7 +19,10 @@ const state = {
     publisher: [],
     coverType: []
   },
-  watchlistFilters: []
+  watchlistFilters: [],
+  offersModal: false,
+  isOffersLoadingSpinnerVisible: false,
+  currentBook: {}
 }
 
 const actions = {
@@ -52,6 +55,15 @@ const actions = {
   clearCurrentOffer ({ commit }) {
     commit('clearCurrentOffer')
   },
+  setOffersLoadingSpinner ({ commit }, value) {
+    commit('setOffersLoadingSpinner', value)
+  },
+  setOffersModalVisibility ({ commit }, value) {
+    commit('setOffersModalVisibility', value)
+  },
+  setCurrentBook ({ commit }, currentBook) {
+    commit('setCurrentBook', currentBook)
+  },
   addAlert ({ dispatch }, payload) {
     const alertType = functions.getAlertType(payload.alertOpt)
     axios.post(`${endpoints.BACKEND_URL}${endpoints.USER_WATCHLIST_URI}/alerts/${payload.currentBook.id}?alertType=${alertType}`)
@@ -81,9 +93,6 @@ const actions = {
           message: buildDeleteAlertMessage(alertType)
         })
       })
-  },
-  setOffersLoadingSpinner ({ commit }, payload) {
-    commit('setOffersLoadingSpinner', payload)
   },
   searchBooks ({ commit }, searchWord) {
     const carturestiUrl = encodeURIComponent(`https://www.carturesti.ro/product/search/${searchWord}?page=1&id_product_type=26`)
@@ -216,6 +225,15 @@ const mutations = {
     state.filters.publisher = []
     state.filters.coverType = []
     state.watchlistFilters = []
+  },
+  setOffersLoadingSpinner (state, value) {
+    state.isOffersLoadingSpinnerVisible = value
+  },
+  setOffersModalVisibility (state, value) {
+    state.offersModal = value
+  },
+  setCurrentBook (state, currentBook) {
+    state.currentBook = currentBook
   }
 }
 
@@ -268,6 +286,15 @@ const getters = {
   },
   getCurrentOffer: (state) => {
     return state.currentOffer
+  },
+  getCurrentBook: (state) => {
+    return state.currentBook
+  },
+  getOffersModal: (state) => {
+    return state.offersModal
+  },
+  getOffersLoadingSpinnerState: (state) => {
+    return state.isOffersLoadingSpinnerVisible
   }
 }
 
