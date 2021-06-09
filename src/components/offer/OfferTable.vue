@@ -76,7 +76,6 @@ export default {
       this.clearCurrentOffer()
     },
     addToWatchlist (offer) {
-      debugger
       const currentUserId = SessionStorage.getItem('userId')
       this.getCurrentBook().offer = offer
       this.addToWishlist({ book: this.getCurrentBook(), currentUserId: currentUserId })
