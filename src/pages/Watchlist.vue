@@ -143,12 +143,7 @@
     <q-page-sticky expand class="q-mb-xl sticky-pg bg-primary" position="top" >
       <div class="q-ml-xs flex col-11">
         <div class="col">
-          <q-input class="text-white q-pa-xs" bg-color="white" dark dense standout v-model="text">
-            <template v-slot:append>
-              <q-icon class="text-grey-9" v-if="text === ''" name="search" />
-              <q-icon v-else name="clear" class="text-dark cursor-pointer" @click="text = ''" />
-            </template>
-          </q-input>
+          <searchbar inputClass="text-white q-pa-xs" bgColor="white"/>
         </div>
         <div class="sort-div q-ma-xs">
            <q-btn flat round icon="filter_list" @click="filterModal = true">
@@ -168,12 +163,12 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import functions from '../shared/functions'
-
+import Searchbar from '../components/Searchbar.vue'
 export default {
+  components: { Searchbar },
   data () {
     return {
       filterModal: false,
-      text: '',
       alertModal: false,
       isHidden: false,
       filters: [

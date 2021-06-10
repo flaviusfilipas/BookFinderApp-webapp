@@ -1,17 +1,6 @@
 <template>
   <q-tabs>
-    <q-input :class= "[includeSearchbar ? 'header-searchbar stretch' : 'hidden']"
-      dark
-      dense
-      standout
-      v-model="searchText"
-      placeholder="Search By Title, ISBN, Author or Keyword"
-      @keyup.enter="search">
-      <template v-slot:append>
-        <q-icon v-model='searchText' name="search" @click='search' />
-        <!-- <q-icon v name="clear" class="cursor-pointer" @click="text = ''" /> -->
-      </template>
-    </q-input>
+    <searchbar :inputClass="includeSearchbar ? 'header-searchbar stretch' : 'hidden'"/>
       <q-route-tab
         v-if = 'loggedIn'
         exact
@@ -30,25 +19,14 @@
 
 <script>
 import UserAccountAvatar from './UserAccountAvatar.vue'
-import { mapState, mapActions } from 'vuex'
+import Searchbar from '../Searchbar.vue'
+import { mapState } from 'vuex'
 export default {
-  components: { UserAccountAvatar },
+  components: { UserAccountAvatar, Searchbar },
   props: {
     includeSearchbar: {
       type: Boolean,
       default: false
-    }
-  },
-  data () {
-    return {
-      text: '',
-      searchText: ''
-    }
-  },
-  methods: {
-    ...mapActions('booksStore', ['searchBooks']),
-    search () {
-      this.searchBooks(this.searchText)
     }
   },
   computed: {

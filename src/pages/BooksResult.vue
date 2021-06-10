@@ -23,12 +23,7 @@
   <q-page-sticky expand class="bg-primary" position="top" >
       <div class="q-ml-xs flex col-11">
         <div class="col">
-          <q-input class="mobile-input text-white q-pa-xs" bg-color="white" dark dense standout v-model="text">
-            <template v-slot:append>
-              <q-icon class="text-grey-9" v-if="text === ''" name="search" />
-              <q-icon v-else name="clear" class="text-dark cursor-pointer" @click="text = ''" />
-            </template>
-          </q-input>
+          <searchbar inputClass="mobile-input text-white q-pa-xs" bgColor="white" iconClass="text-grey-9"/>
         </div>
         <div class="filter-div q-ma-xs">
           <q-btn flat round icon="filter_list" @click="filterModal = true"/>
@@ -43,12 +38,12 @@ import Book from '../components/Book.vue'
 import OfferModal from '../components/offer/OfferModal.vue'
 import BookFiltersWeb from '../components/filters/BookFiltersWeb.vue'
 import BookFiltersMobile from '../components/filters/BookFiltersMobile.vue'
+import Searchbar from '../components/Searchbar.vue'
 import { mapGetters } from 'vuex'
 export default {
-  components: { Book, OfferModal, BookFiltersWeb, BookFiltersMobile },
+  components: { Book, OfferModal, BookFiltersWeb, BookFiltersMobile, Searchbar },
   data () {
     return {
-      text: '',
       current: 1,
       filterModal: false,
       currentBook: {}
