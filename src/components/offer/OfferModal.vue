@@ -1,6 +1,6 @@
 <template>
       <q-dialog ref='offersDialog' v-model="offersModal" full-width persistent>
-      <offer-card @closeDialog='closeDialog(value)'/>
+      <offer-card @closeDialog='closeDialog()'/>
     </q-dialog>
 </template>
 
@@ -10,8 +10,8 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   components: { OfferCard },
   methods: {
-    ...mapGetters('booksStore', ['getOffersModal']),
-    ...mapActions('booksStore', ['setOffersModalVisibility']),
+    ...mapGetters('modalsStore', ['getOffersModal']),
+    ...mapActions('modalsStore', ['setOffersModalVisibility']),
     closeDialog () {
       this.$refs.offersDialog.hide()
     }

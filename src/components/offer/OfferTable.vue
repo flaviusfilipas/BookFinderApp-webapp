@@ -65,7 +65,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions('booksStore', ['clearCurrentOffer', 'setOffersLoadingSpinner', 'addToWishlist']),
+    ...mapActions('modalsStore', ['setOffersLoadingSpinner']),
+    ...mapActions('booksStore', ['clearCurrentOffer', 'addToWishlist']),
     ...mapGetters('booksStore', ['getCurrentOffer', 'getCurrentBook']),
     ...mapState('authStore', ['loggedIn']),
     redirectToProvider (providerUrl) {

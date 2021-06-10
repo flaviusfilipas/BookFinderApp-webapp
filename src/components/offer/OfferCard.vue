@@ -23,7 +23,7 @@ export default {
   components: { OfferTable },
   methods: {
     ...mapActions('booksStore', ['clearCurrentOffer']),
-    ...mapGetters('booksStore', ['getOffersLoadingSpinnerState']),
+    ...mapGetters('modalsStore', ['getOffersLoadingSpinnerState']),
     clearOfferState () {
       this.$emit('closeDialog')
       this.clearCurrentOffer()

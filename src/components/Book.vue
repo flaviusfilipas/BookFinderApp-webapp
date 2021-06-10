@@ -29,14 +29,12 @@ export default {
     }
   },
   methods: {
-    ...mapActions('booksStore', ['setOffersLoadingSpinner', 'setOffersModalVisibility', 'setCurrentBook', 'findCurrentOffers']),
+    ...mapActions('modalsStore', ['setOffersModalVisibility', 'setOffersLoadingSpinner']),
+    ...mapActions('booksStore', ['setCurrentBook', 'findCurrentOffers']),
     showOffersModal (currentBook) {
       this.setCurrentBook(currentBook)
-      // this.currentBook = currentBook
       this.setOffersModalVisibility(true)
       this.setOffersLoadingSpinner(true)
-      // this.offersModal = true
-      // this.isOffersLoadingSpinnerVisible = true
       this.findCurrentOffers(currentBook)
     }
   },
