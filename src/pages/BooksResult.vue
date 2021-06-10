@@ -14,22 +14,13 @@
   <q-drawer
     side="right"
     behavior="mobile"
-    v-model="filterModal"
+    v-model="filtersModal"
     overlay
     bordered
     content-style="background-color:#e0e0e0">
       <book-filters-mobile/>
   </q-drawer>
-  <q-page-sticky expand class="bg-primary" position="top" >
-      <div class="q-ml-xs flex col-11">
-        <div class="col">
-          <searchbar inputClass="mobile-input text-white q-pa-xs" bgColor="white" iconClass="text-grey-9"/>
-        </div>
-        <div class="filter-div q-ma-xs">
-          <q-btn flat round icon="filter_list" @click="filterModal = true"/>
-        </div>
-      </div>
-    </q-page-sticky>
+  <mobile-sticky-view stickyClass="bg-primary"/>
   </q-page>
 </template>
 
@@ -38,42 +29,39 @@ import Book from '../components/Book.vue'
 import OfferModal from '../components/offer/OfferModal.vue'
 import BookFiltersWeb from '../components/filters/BookFiltersWeb.vue'
 import BookFiltersMobile from '../components/filters/BookFiltersMobile.vue'
-import Searchbar from '../components/Searchbar.vue'
-import { mapGetters } from 'vuex'
+import MobileStickyView from '../components/MobileStickyView.vue'
+import { mapGetters, mapState, mapActions } from 'vuex'
 export default {
-  components: { Book, OfferModal, BookFiltersWeb, BookFiltersMobile, Searchbar },
+  components: { Book, OfferModal, BookFiltersWeb, BookFiltersMobile, MobileStickyView },
   data () {
     return {
-      current: 1,
-      filterModal: false,
-      currentBook: {}
+      current: 1
     }
   },
+  methods: {
+    ...mapActions('modalsStore', ['setFilterModal'])
+
+  },
   computed: {
-    ...mapGetters('booksStore', { booksResults: 'getBooks' })
+    ...mapState('modalsStore', ['filterModal']),
+    ...mapGetters('booksStore', { booksResults: 'getBooks' }),
+    filtersModal: {
+      get () {
+        return this.filterModal
+      },
+      set (value) {
+        this.setFilterModal(value)
+        console.log(value)
+      }
+    },
+    ...mapGetters('modalsStore', { filterModal: 'getFilterModal' })
   }
 }
 </script>
 
 <style lang="scss">
-   @media(min-width: 695px) {
-    .q-page-sticky{
-      display: none;
-    }
-  }
   @media(max-width: 695px){
     .web-filter-div{
-      display: none;
-    }
-    .filter-div{
-      background-color:#f8f1f1;
-      height:2.8em;
-      border-radius:3px;
-    }
-    .q-page-sticky{
-      justify-content: flex-start;
-    }
-    .header-input{
       display: none;
     }
     .results-page{

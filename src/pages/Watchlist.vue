@@ -139,33 +139,16 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-
-    <q-page-sticky expand class="q-mb-xl sticky-pg bg-primary" position="top" >
-      <div class="q-ml-xs flex col-11">
-        <div class="col">
-          <searchbar inputClass="text-white q-pa-xs" bgColor="white"/>
-        </div>
-        <div class="sort-div q-ma-xs">
-           <q-btn flat round icon="filter_list" @click="filterModal = true">
-              <q-tooltip>Filter results</q-tooltip>
-           </q-btn>
-        </div>
-        <!-- <div class="sort-div q-ma-xs">
-          <q-btn flat round icon="assistant">
-            <q-tooltip>Get suggestions</q-tooltip>
-          </q-btn>
-        </div> -->
-      </div>
-    </q-page-sticky>
+    <mobile-sticky-view stickyClass="q-mb-xl sticky-pg bg-primary"/>
     </q-page>
 </template>
 
 <script>
 import { mapState, mapActions } from 'vuex'
 import functions from '../shared/functions'
-import Searchbar from '../components/Searchbar.vue'
+import MobileStickyView from '../components/MobileStickyView.vue'
 export default {
-  components: { Searchbar },
+  components: { MobileStickyView },
   data () {
     return {
       filterModal: false,
@@ -356,9 +339,6 @@ export default {
   }
 
   @media(min-width: 897px) {
-    .sticky-pg{
-      display: none;
-    }
     .book-info-section-title{
       display: none;
     }
@@ -369,17 +349,6 @@ export default {
     max-width: 150px;
     }
      .watchlist-filters-container{
-      display: none;
-    }
-    .sort-div{
-      background-color:#f8f1f1;
-      height:2.8em;
-      border-radius:3px;
-    }
-    .sticky-pg{
-      justify-content: flex-start;
-    }
-    .header-searchbar{
       display: none;
     }
     .watchlist-page{
