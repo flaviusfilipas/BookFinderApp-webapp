@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 
 import booksStore from './books-store'
 import authStore from './auth-store'
+import modalsStore from './modals-store'
 
 Vue.use(Vuex)
 
@@ -19,7 +20,8 @@ export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
     modules: {
       booksStore,
-      authStore
+      authStore,
+      modalsStore
     },
 
     // enable strict mode (adds overhead!)
