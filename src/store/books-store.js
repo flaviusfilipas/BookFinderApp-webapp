@@ -12,7 +12,7 @@ const state = {
   books: [],
   authors: [],
   publishers: [],
-  bookTypes: [],
+  coverTypes: [],
   currentOffer: [],
   filters: {
     author: [],
@@ -45,9 +45,6 @@ const actions = {
   },
   setWatchlistFilters ({ commit }, value) {
     commit('setWatchlistFilters', value)
-  },
-  filterBooks ({ commit }) {
-    commit('filterBooks')
   },
   clearFilters ({ commit }) {
     commit('clearFilters')
@@ -159,9 +156,6 @@ const mutations = {
         state.currentOffer.push({ ...value.items[0].offer, isAddedToWatchlist: false })
       }
     }
-    // const librarieNetBook = payload.librarieNetResponse.items.find(element => element.isbn === payload.currentBook.isbn)
-
-    // state.currentOffer.push({ ...librarieNetBook.offer, isAddedToWatchlist: false })
   },
   addBooks (state, payload) {
     console.log(payload)
@@ -186,7 +180,7 @@ const mutations = {
     state.books = list
     state.authors = [...new Map(authors.map(item => [item.value, item])).values()]
     state.publishers = [...new Map(publishers.map(item => [item.value, item])).values()]
-    state.bookTypes = [...new Map(coverTypes.map(item => [item.value, item])).values()]
+    state.coverTypes = [...new Map(coverTypes.map(item => [item.value, item])).values()]
     console.log(state.books)
   },
 
@@ -281,8 +275,8 @@ const getters = {
   getPublishers: (state) => {
     return state.publishers
   },
-  getBookTypes: (state) => {
-    return state.bookTypes
+  getCoverTypes: (state) => {
+    return state.coverTypes
   },
   getCurrentOffer: (state) => {
     return state.currentOffer
