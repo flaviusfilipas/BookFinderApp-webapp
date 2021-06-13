@@ -4,7 +4,9 @@ function getAlertType (alertOptions) {
   }
   return alertOptions[0]
 }
-
+function isBlank (str) {
+  return (!str || /^\s*$/.test(str))
+}
 export default {
-  getAlertType
+  getAlertType, isBlank
 }

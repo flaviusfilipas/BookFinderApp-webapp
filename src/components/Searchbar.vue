@@ -12,13 +12,14 @@
   v-model="searchText"
   @keyup.enter="search">
     <template v-slot:append>
-      <q-icon :class="iconClass" name="search" v-model='searchText' @click='search'/>
+      <q-icon :class="!isSearchTextBlank () ? iconClass: `${iconClass} disabled`" name="search" v-model='searchText' @click='search'/>
     </template>
   </q-input>
 </template>
 
 <script>
 import { mapActions } from 'vuex'
+import functions from '../shared/functions'
 export default {
   props: {
     inputClass: {
@@ -61,7 +62,17 @@ export default {
   methods: {
     ...mapActions('booksStore', ['searchBooks']),
     search () {
-      this.searchBooks(this.searchText)
+      if (this.isSearchTextBlank()) {
+        this.$q.dialog({
+          title: 'Error',
+          message: 'Please enter keyword before searching'
+        })
+      } else {
+        this.searchBooks(this.searchText)
+      }
+    },
+    isSearchTextBlank () {
+      return functions.isBlank(this.searchText)
     }
   }
 }
