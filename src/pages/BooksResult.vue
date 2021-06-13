@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import Book from '../components/Book.vue'
+import Book from '../components/core/Book.vue'
 import OfferModal from '../components/offer/OfferModal.vue'
 import BookFiltersWeb from '../components/filters/BookFiltersWeb.vue'
 import BookFiltersMobile from '../components/filters/BookFiltersMobile.vue'
