@@ -20,8 +20,6 @@ const state = {
     coverType: []
   },
   watchlistFilters: [],
-  offersModal: false,
-  isOffersLoadingSpinnerVisible: false,
   currentBook: {},
   currentWatchlistBook: {}
 }
@@ -52,12 +50,6 @@ const actions = {
   },
   clearCurrentOffer ({ commit }) {
     commit('clearCurrentOffer')
-  },
-  setOffersLoadingSpinner ({ commit }, value) {
-    commit('setOffersLoadingSpinner', value)
-  },
-  setOffersModalVisibility ({ commit }, value) {
-    commit('setOffersModalVisibility', value)
   },
   setCurrentBook ({ commit }, currentBook) {
     commit('setCurrentBook', currentBook)
@@ -224,12 +216,6 @@ const mutations = {
     state.filters.coverType = []
     state.watchlistFilters = []
   },
-  setOffersLoadingSpinner (state, value) {
-    state.isOffersLoadingSpinnerVisible = value
-  },
-  setOffersModalVisibility (state, value) {
-    state.offersModal = value
-  },
   setCurrentBook (state, currentBook) {
     state.currentBook = currentBook
   },
@@ -293,12 +279,6 @@ const getters = {
   },
   getCurrentWatchlistBook: (state) => {
     return state.currentWatchlistBook
-  },
-  getOffersModal: (state) => {
-    return state.offersModal
-  },
-  getOffersLoadingSpinnerState: (state) => {
-    return state.isOffersLoadingSpinnerVisible
   }
 }
 
