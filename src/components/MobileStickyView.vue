@@ -2,7 +2,7 @@
     <q-page-sticky expand :class="stickyClass" position="top" >
       <div class="q-ml-xs flex col-11">
         <div class="col">
-          <searchbar inputClass="mobile-input text-white q-pa-xs" bgColor="white" iconClass="text-grey-9"/>
+          <searchbar inputClass="mobile-input text-white q-pa-xs" bgColor="white" iconClass="text-grey-9" standout dense/>
         </div>
         <div class="filter-div q-ma-xs">
           <q-btn flat round icon="filter_list" @click="handleFilterModal(true)">

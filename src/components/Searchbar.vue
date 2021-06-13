@@ -4,8 +4,11 @@
   :bg-color="bgColor"
   placeholder="Search By Title, ISBN, Author or Keyword"
   dark
-  dense
-  standout
+  :dense="dense"
+  :standout="standout"
+  :rounded="rounded"
+  :outlined="outlined"
+  :autofocus="autofocus"
   v-model="searchText"
   @keyup.enter="search">
     <template v-slot:append>
@@ -28,6 +31,26 @@ export default {
     },
     iconClass: {
       type: String
+    },
+    standout: {
+      type: Boolean,
+      required: false
+    },
+    outlined: {
+      type: Boolean,
+      required: false
+    },
+    autofocus: {
+      type: Boolean,
+      required: false
+    },
+    dense: {
+      type: Boolean,
+      required: false
+    },
+    rounded: {
+      type: Boolean,
+      required: false
     }
   },
   data () {

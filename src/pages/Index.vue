@@ -12,37 +12,15 @@
                  Compare book prices from major providers
             </div>
           </div>
-        <q-input
-          class="text-white q-ma-xs-sm"
-          autofocus
-          dark
-          rounded
-          outlined
-          v-model="search"
-          placeholder="Search By Title, ISBN, Author or Keyword"
-          @keyup.enter="searchBook">
-          <template v-slot:append>
-            <q-btn round flat icon="search" @click="searchBook"/>
-          </template>
-        </q-input>
+          <searchbar inputClass="text-white q-ma-xs-sm" iconClass="cursor-pointer" autofocus rounded outlined />
       </div>
   </q-page>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import Searchbar from '../components/Searchbar.vue'
 export default {
-  data () {
-    return {
-      search: ''
-    }
-  },
-  methods: {
-    searchBook () {
-      this.searchBooks(this.search)
-    },
-    ...mapActions('booksStore', ['searchBooks'])
-  }
+  components: { Searchbar }
 }
 
 </script>

@@ -1,6 +1,6 @@
 <template>
   <q-tabs>
-    <searchbar :inputClass="includeSearchbar ? 'header-searchbar stretch' : 'hidden'"/>
+    <searchbar :inputClass="includeSearchbar ? 'header-searchbar stretch cursor-pointer' : 'hidden'" standout dense/>
       <q-route-tab
         v-if = 'loggedIn'
         exact
