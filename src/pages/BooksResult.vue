@@ -11,15 +11,11 @@
       </div>
     </div>
     <offer-modal></offer-modal>
-  <q-drawer
-    side="right"
-    behavior="mobile"
-    v-model="filtersModal"
-    overlay
-    bordered
-    content-style="background-color:#e0e0e0">
+  <filter-drawer>
+    <mobile-filters-view>
       <book-filters-mobile/>
-  </q-drawer>
+    </mobile-filters-view>
+  </filter-drawer>
   <mobile-sticky-view stickyClass="bg-primary"/>
   </q-page>
 </template>
@@ -30,14 +26,11 @@ import OfferModal from '../components/offer/OfferModal.vue'
 import BookFiltersWeb from '../components/filters/BookFiltersWeb.vue'
 import BookFiltersMobile from '../components/filters/BookFiltersMobile.vue'
 import MobileStickyView from '../components/MobileStickyView.vue'
+import MobileFiltersView from '../components/filters/MobileFiltersView.vue'
+import FilterDrawer from '../components/filters/FilterDrawer.vue'
 import { mapGetters, mapState, mapActions } from 'vuex'
 export default {
-  components: { Book, OfferModal, BookFiltersWeb, BookFiltersMobile, MobileStickyView },
-  data () {
-    return {
-      current: 1
-    }
-  },
+  components: { Book, OfferModal, BookFiltersWeb, BookFiltersMobile, FilterDrawer, MobileFiltersView, MobileStickyView },
   methods: {
     ...mapActions('modalsStore', ['setFilterModal'])
 

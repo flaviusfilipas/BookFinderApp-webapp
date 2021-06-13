@@ -11,12 +11,7 @@
               <q-item-label class="q-ml-sm q-mb-sm text-h5">
                 Filters
               </q-item-label>
-              <q-option-group
-                class="q-mb-sm"
-                :options="filters"
-                v-model="filter"
-                color="blue"
-                type="checkbox"/>
+              <watchlist-filters/>
             </q-list>
           </div>
           <hr>
@@ -34,25 +29,11 @@
     </div>
     <delete-alert-modal/>
     <alert-modal/>
-
-    <q-dialog v-model="filterModal">
-      <q-card>
-        <q-card-section>
-          <div class="text-h6">Choose filter</div>
-        </q-card-section>
-
-        <q-card-section class="q-pt-none">
-            <q-option-group
-              :options="filters"
-              type="checkbox"
-              v-model="filter"/>
-        </q-card-section>
-
-        <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Clear filters" @click='clearAllFilters'/>
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+    <filter-drawer>
+      <mobile-filters-view>
+        <watchlist-filters/>
+      </mobile-filters-view>
+    </filter-drawer>
     <mobile-sticky-view stickyClass="q-mb-xl sticky-pg bg-primary"/>
     </q-page>
 </template>
@@ -63,8 +44,11 @@ import MobileStickyView from '../components/MobileStickyView.vue'
 import WatchlistBook from '../components/core/WatchlistBook.vue'
 import DeleteAlertModal from '../components/modals/DeleteAlertModal.vue'
 import AlertModal from '../components/modals/AlertModal.vue'
+import FilterDrawer from '../components/filters/FilterDrawer.vue'
+import WatchlistFilters from '../components/filters/WatchlistFilters.vue'
+import MobileFiltersView from '../components/filters/MobileFiltersView.vue'
 export default {
-  components: { MobileStickyView, WatchlistBook, DeleteAlertModal, AlertModal },
+  components: { MobileStickyView, WatchlistBook, DeleteAlertModal, AlertModal, FilterDrawer, WatchlistFilters, MobileFiltersView },
   data () {
     return {
       filterModal: false,
