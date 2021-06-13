@@ -22,7 +22,8 @@ const state = {
   watchlistFilters: [],
   offersModal: false,
   isOffersLoadingSpinnerVisible: false,
-  currentBook: {}
+  currentBook: {},
+  currentWatchlistBook: {}
 }
 
 const actions = {
@@ -60,6 +61,9 @@ const actions = {
   },
   setCurrentBook ({ commit }, currentBook) {
     commit('setCurrentBook', currentBook)
+  },
+  setCurrentWatchlistBook ({ commit }, watchlistBook) {
+    commit('setCurrentWatchlistBook', watchlistBook)
   },
   addAlert ({ dispatch }, payload) {
     const alertType = functions.getAlertType(payload.alertOpt)
@@ -228,6 +232,9 @@ const mutations = {
   },
   setCurrentBook (state, currentBook) {
     state.currentBook = currentBook
+  },
+  setCurrentWatchlistBook (state, watchlistBook) {
+    state.currentWatchlistBook = watchlistBook
   }
 }
 
@@ -283,6 +290,9 @@ const getters = {
   },
   getCurrentBook: (state) => {
     return state.currentBook
+  },
+  getCurrentWatchlistBook: (state) => {
+    return state.currentWatchlistBook
   },
   getOffersModal: (state) => {
     return state.offersModal
