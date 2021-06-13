@@ -1,7 +1,9 @@
 const state = {
   offersModal: false,
   isOffersLoadingSpinnerVisible: false,
-  filterModal: false
+  filterModal: false,
+  alertsModal: false,
+  deleteAlertsModal: false
 }
 const actions = {
   setFilterModal ({ commit }, value) {
@@ -12,6 +14,12 @@ const actions = {
   },
   setOffersModalVisibility ({ commit }, value) {
     commit('setOffersModalVisibility', value)
+  },
+  setAlertsModalVisibility ({ commit }, value) {
+    commit('setAlertsModalVisibility', value)
+  },
+  setDeleteAlertsModalVisibility ({ commit }, value) {
+    commit('setDeleteAlertsModalVisibility', value)
   }
 }
 const mutations = {
@@ -23,6 +31,12 @@ const mutations = {
   },
   setOffersModalVisibility (state, value) {
     state.offersModal = value
+  },
+  setAlertsModalVisibility (state, value) {
+    state.alertsModal = value
+  },
+  setDeleteAlertsModalVisibility (state, value) {
+    state.deleteAlertsModal = value
   }
 }
 const getters = {
@@ -34,6 +48,12 @@ const getters = {
   },
   getOffersLoadingSpinnerState: (state) => {
     return state.isOffersLoadingSpinnerVisible
+  },
+  getAlertsModal: (state) => {
+    return state.alertsModal
+  },
+  getDeleteAlertsModal: (state) => {
+    return state.deleteAlertsModal
   }
 }
 export default {
