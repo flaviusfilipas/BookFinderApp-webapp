@@ -28,99 +28,13 @@
     <div class="col-sm-9 col-xs-12">
       <div class="flex">
         <div class="row">
-            <q-card ref="bookCard" class="my-card q-pa-sm q-ma-sm" v-for="book in wishlist" :key="book.id">
-              <q-card-section horizontal>
-              <!-- <div class="book-image-container">
-                  <img class="book-image" :src="book.imgSource">
-              </div> -->
-              <q-img @click="goToProviderPage(book.bookDTO.offer.link)" class="cursor-pointer" :src="book.bookDTO.imgUrl" style="height:100%; max-height:190px" height="190px">
-                <q-tooltip>Go to provider</q-tooltip>
-              </q-img>
-              <q-card-actions class="q-ml-xs" vertical style="border-radius:10px;padding:0px;">
-                <q-btn v-if="hasAlerts(book)" flat round color="yellow" icon="star" >
-                  <q-tooltip v-if="hasAlerts(book)">
-                    {{getAlertTypesForBook(book)}}
-                  </q-tooltip>
-                 </q-btn>
-                <q-btn flat round color="warning" icon="add_alert" @click="showAlertsModal(book)" >
-                  <q-tooltip>
-                    Add alert
-                  </q-tooltip>
-                </q-btn>
-                <q-btn rounded flat color="red" icon="close" >
-                    <q-menu>
-                      <q-list>
-                      <q-item clickable v-close-popup @click="deleteFromWatchlist(book.id)">
-                        <q-item-section>
-                          <q-item-label>Delete from watchlist</q-item-label>
-                        </q-item-section>
-                      </q-item>
-                      <q-item clickable v-close-popup @click="showDeleteAlertsModal(book)">
-                        <q-item-section>
-                          <q-item-label>Delete alerts</q-item-label>
-                        </q-item-section>
-                      </q-item>
-                    </q-list>
-                  </q-menu>
-                </q-btn>
-              </q-card-actions>
-            </q-card-section>
-            <q-card-section class="q-pa-xs book-info-section">
-              <span class="watch-book-info-area">
-                <div class="watch-book-info-area text-subtitle2">{{book.bookDTO.title}}</div>
-                <q-tooltip>{{book.bookDTO.title}}</q-tooltip>
-              </span>
-              <div class="watch-book-info-area text-caption">By: {{book.bookDTO.author}}</div>
-              <div class="watch-book-info-area text-caption text-bold">ISBN: {{book.bookDTO.isbn}}</div>
-              <div class="watch-book-info-area text-caption text-italic">{{book.bookDTO.coverType}}, {{book.bookDTO.numberOfPages}} pages, publisher {{book.bookDTO.publisher}}</div>
-              <div v-if="book.bookDTO.offer.hasStock" class="watch-book-info-area text-caption text-italic text-positive">In stock</div>
-              <div v-else class="watch-book-info-area text-caption text-italic text-negative">Not in stock</div>
-              <div class="watch-book-info-area text-caption text-italic">Sold by <b>{{book.bookDTO.offer.provider}}</b></div>
-              <div class="watch-book-info-area text-subtitle1 text-bold">Original Price: {{book.originalPrice}} lei</div>
-              <div class="watch-book-info-area text-subtitle1 text-bold">Last Price: {{book.lastPrice}} lei</div>
-            </q-card-section>
-          </q-card>
+          <watchlist-book v-for="book in wishlist" :key="book.id" :book="book"/>
         </div>
       </div>
     </div>
-    <q-dialog v-model = "deleteAlertsModal">
-      <q-card>
-        <q-card-section>
-          <div class="text-h6">Choose type of alert to delete:</div>
-        </q-card-section>
+    <delete-alert-modal/>
+    <alert-modal/>
 
-        <q-card-section class="q-pt-none">
-          <q-option-group
-            :options="deleteAlertOps"
-            type="checkbox"
-            v-model="deleteAlertOpt"/>
-        </q-card-section>
-
-        <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Cancel" v-close-popup />
-          <q-btn flat label="Confirm" @click = "deleteAlert" v-close-popup />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-    <q-dialog v-model="alertModal">
-      <q-card>
-        <q-card-section>
-          <div class="text-h6">Choose type of alert:</div>
-        </q-card-section>
-
-        <q-card-section class="q-pt-none">
-          <q-option-group
-            :options="alertOps"
-            type="checkbox"
-            v-model="alertOpt"/>
-        </q-card-section>
-
-        <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Cancel" v-close-popup />
-          <q-btn flat label="Confirm" @click = "addBookAlert" v-close-popup />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
     <q-dialog v-model="filterModal">
       <q-card>
         <q-card-section>
@@ -145,15 +59,15 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import functions from '../shared/functions'
 import MobileStickyView from '../components/MobileStickyView.vue'
+import WatchlistBook from '../components/core/WatchlistBook.vue'
+import DeleteAlertModal from '../components/modals/DeleteAlertModal.vue'
+import AlertModal from '../components/modals/AlertModal.vue'
 export default {
-  components: { MobileStickyView },
+  components: { MobileStickyView, WatchlistBook, DeleteAlertModal, AlertModal },
   data () {
     return {
       filterModal: false,
-      alertModal: false,
-      isHidden: false,
       filters: [
         {
           label: 'Show price alerts',
@@ -162,100 +76,11 @@ export default {
           label: 'Show stock alerts',
           value: 'stock'
         }
-      ],
-      deleteAlertOpt: [],
-      alertOpt: [],
-      currentBook: {},
-      deleteAlertsModal: false
+      ]
     }
   },
   methods: {
-    getAlertTypesForBook (book) {
-      const alertTypes = [book.hasStockAlert ? 'stock' : '', book.hasPriceAlert ? 'price' : ''].filter(alert => alert !== '')
-      return alertTypes.length > 1 ? 'This book has enabled stock and price alerts' : `This book has enabled ${alertTypes[0]} alert`
-    },
-    showAlertsModal (currentBook) {
-      this.alertModal = true
-      this.currentBook = currentBook
-    },
-    goToProviderPage (link) {
-      window.open(link, '_blank')
-    },
-    ...mapActions('booksStore', ['setWatchlistFilters', 'clearFilters', 'addAlert', 'deleteBookFromWatchlist', 'deleteAlerts', 'getWatchlistBooksForCurrentUser']),
-    addBookAlert () {
-      const currentBook = this.currentBook
-      const alertOpt = this.alertOpt
-      this.addAlert({ currentBook, alertOpt })
-      this.notifyAlert()
-    },
-    hasAlerts (book) {
-      if (book.hasStockAlert || book.hasPriceAlert) {
-        return true
-      }
-      return false
-    },
-    hasAllAlerts (book) {
-      return book.hasStockAlert && book.hasPriceAlert
-    },
-    deleteFromWatchlist (bookId) {
-      this.$q.dialog({
-        title: 'Confirm',
-        message: 'Do you really want to delete the book from watchlist? ',
-        cancel: true,
-        persistent: true
-      }).onOk(() => {
-        this.deleteBookFromWatchlist(bookId)
-      })
-    },
-    showDeleteAlertsModal (book) {
-      this.deleteAlertsModal = true
-      this.currentBook = book
-    },
-    deleteAlert () {
-      const currentBook = this.currentBook
-      const deleteAlertOpt = this.deleteAlertOpt
-      this.deleteAlerts({ currentBook, deleteAlertOpt })
-      this.deleteAlertOpt = []
-    },
-    handleNotifyMessage () {
-      const noun = this.deleteAlertOpt !== 'all' ? 'alert' : 'alerts'
-      return `Succesfully deleted ${this.deleteAlertOpt} ${noun}`
-    },
-    notifyAlert () {
-      const alertOption = functions.getAlertType(this.alertOpt)
-      switch (alertOption) {
-        case 'price':
-          this.notifyPriceAlert()
-          break
-        case 'stock': this.notifyStockAlert()
-          break
-        case 'all': this.notifyAlerts()
-          break
-        default: alert('Invalid option')
-      }
-      this.alertOpt = []
-    },
-    notifyPriceAlert () {
-      this.$q.notify({
-        type: 'positive',
-        timeout: 500,
-        message: 'You will be notified when price will go down '
-      })
-    },
-    notifyStockAlert () {
-      this.$q.notify({
-        type: 'positive',
-        timeout: 500,
-        message: 'You will be notified when book will be back in stock'
-      })
-    },
-    notifyAlerts () {
-      this.$q.notify({
-        type: 'positive',
-        timeout: 500,
-        message: 'You will be notified when book will be back in stock and when price will go down'
-      })
-    },
+    ...mapActions('booksStore', ['setWatchlistFilters', 'clearFilters', 'getWatchlistBooksForCurrentUser']),
     clearAllFilters () {
       this.clearFilters()
     }
@@ -273,34 +98,6 @@ export default {
         this.setWatchlistFilters(value)
         console.log(value)
       }
-    },
-    alertOps () {
-      return [
-        {
-          label: 'Price alert',
-          value: 'price',
-          disable: this.currentBook.hasPriceAlert
-        },
-        {
-          label: 'Stock alert',
-          value: 'stock',
-          disable: this.currentBook.hasStockAlert
-        }
-      ]
-    },
-    deleteAlertOps () {
-      return [
-        {
-          label: 'Price alert',
-          value: 'price',
-          disable: !this.currentBook.hasPriceAlert
-        },
-        {
-          label: 'Stock alert',
-          value: 'stock',
-          disable: !this.currentBook.hasStockAlert
-        }
-      ]
     }
   },
   beforeMount () {
@@ -310,58 +107,18 @@ export default {
 </script>
 
 <style scoped>
-  .book-image-container{
-    height: 200px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-   .book-image{
-   display:block;
-   max-width:100%;
-   max-height:100%
-  }
-  .watch-book-info-area{
-    height:40px;
-    text-overflow:ellipsis;
-    overflow:hidden;
-  }
-
-  .my-card{
-  width: 100%;
-  max-width: 200px;
-  }
   .watchlist-filters{
     background-color: #f8f1f1;
     border-radius: 25px;
     position: sticky;
     top:0;
   }
-
-  @media(min-width: 897px) {
-    .book-info-section-title{
-      display: none;
-    }
-  }
   @media(max-width: 897px){
-  .my-card{
-    width: 100%;
-    max-width: 150px;
-    }
-     .watchlist-filters-container{
+    .watchlist-filters-container{
       display: none;
     }
     .watchlist-page{
       margin-top: 48px;
-    }
-    .book-info-section{
-      padding: 0px;
-    }
-    .image-book-info{
-      display: none
-    }
-    .book-info-section-title{
-      background: rgba(0, 0, 0, 0.47);
     }
   };
 </style>
