@@ -18,13 +18,6 @@ const routes = [
     ]
   },
   {
-    path: '/books',
-    component: () => import('layouts/BasicLayout.vue'),
-    children: [
-      { path: ':id', component: () => import('pages/IndividualBook.vue') }
-    ]
-  },
-  {
     path: '/login',
     component: () => import('layouts/BasicLayout.vue'),
     children: [
@@ -49,13 +42,9 @@ const routes = [
         path: '', component: () => import('pages/Watchlist.vue')
       }
     ]
-  },
+  }
   // Always leave this as last one,
   // but you can also remove it
-  {
-    path: '/err',
-    component: () => import('pages/Error404.vue')
-  }
 ]
 
 export default routes
